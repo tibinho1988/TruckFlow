@@ -1,0 +1,22 @@
+{
+  "name": "TruckFlow",
+  "short_name": "TruckFlow",
+  "description": "TruckFlow ramp and truck management",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e1e1e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "truckflow-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "truckflow-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
