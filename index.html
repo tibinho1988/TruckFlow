@@ -1,18 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="truckflow-logo.png">
 <link rel="apple-touch-icon" href="truckflow-logo.png">
 <meta name="theme-color" content="#1e1e1e">
-
 <title>TruckFlow</title>
+
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;padding:0;font-family:Arial,sans-serif;background-color:#ffe5cc;color:#222}
@@ -34,19 +33,6 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background-color:#ffe5cc;co
 .android-logo{position:absolute;right:15px;top:50%;transform:translateY(-50%);height:34px;width:34px;object-fit:contain;border-radius:4px;cursor:pointer;transition:transform .2s}
 .android-logo:hover{transform:translateY(-50%) scale(1.1)}
 .container{max-width:1700px;margin:10px auto;padding:0 10px}
-.forms-container{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.card{background-color:white;border-radius:6px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid #93c5fd}
-.card h2{margin-top:0;font-size:16px;border-bottom:2px solid #e5e7eb;padding-bottom:4px;color:#1f2937}
-.form-grid{display:grid;grid-template-columns:90px 1.35fr 1.1fr 1fr 110px 100px;gap:6px;align-items:end}
-.form-group{display:flex;flex-direction:column}
-.form-group label{margin-bottom:2px;font-weight:bold;font-size:11px}
-.required-label{color:#2563eb!important}
-.required-input{background-color:#fef08a!important;color:#1e3a8a!important;font-weight:bold}
-.required-input option{background-color:white;color:#222}
-input,select{width:100%;height:32px;padding:4px 6px;border:1px solid #ccc;border-radius:4px;font-size:12px;background-color:white}
-button{height:32px;padding:4px 8px;border:none;border-radius:4px;background-color:#2563eb;color:white;font-size:12px;cursor:pointer}
-button:hover{background-color:#1d4ed8}
-.message{margin-top:4px;font-weight:bold;font-size:11px;min-height:14px;color:#dc2626}
 .tables-container{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .site-container{background-color:white;border-radius:6px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid #93c5fd}
 .site-header-row{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2563eb;padding-bottom:4px;margin-bottom:6px}
@@ -56,6 +42,8 @@ button:hover{background-color:#1d4ed8}
 .ramp-table{width:100%;border-collapse:collapse}
 .ramp-table th{background-color:#e5e7eb;padding:4px 6px;text-align:left;font-size:11px;position:sticky;top:0;z-index:1}
 .ramp-table td{padding:4px 6px;border-bottom:1px solid #eee;font-size:11px}
+.ramp-clickable{cursor:pointer}
+.ramp-clickable:hover{filter:brightness(.95);outline:2px solid #60a5fa;outline-offset:-2px}
 .occupied{font-weight:bold}
 .free{color:#777}
 .route-city-fix{background-color:#fecaca!important}
@@ -63,24 +51,47 @@ button:hover{background-color:#1d4ed8}
 .route-manifest{background-color:#bbf7d0!important}
 .route-depo{background-color:#fef08a!important}
 .route-other{background-color:white!important}
-.delete-btn{height:22px;padding:0 5px;background-color:#dc2626;font-size:11px;font-weight:bold;width:25px}
+.delete-btn{height:22px;padding:0 5px;background-color:#dc2626;font-size:11px;font-weight:bold;width:25px;cursor:pointer;color:white;border:0;border-radius:3px}
 .delete-btn:hover{background-color:#b91c1c}
 .modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center}
 .modal-content{background-color:white;border-radius:8px;width:1100px;max-width:95%;max-height:85vh;display:flex;flex-direction:column;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.15);border:1px solid #93c5fd}
 .modal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #e5e7eb;padding-bottom:10px;margin-bottom:15px}
 .modal-header h2{margin:0;font-size:20px;color:#1f2937}
 .modal-header-actions{display:flex;gap:10px;align-items:center}
-.danger-btn{background-color:#facc15;color:#1d4ed8;height:30px;padding:0 12px;font-size:13px;font-weight:bold}
+.danger-btn{background-color:#facc15;color:#1d4ed8;height:30px;padding:0 12px;font-size:13px;font-weight:bold;border:0;border-radius:4px;cursor:pointer}
 .danger-btn:hover{background-color:#eab308}
-#downloadLogBtn{background-color:#005a9e;color:white;height:30px;padding:0 12px;font-size:13px}
+#downloadLogBtn{background-color:#005a9e;color:white;height:30px;padding:0 12px;font-size:13px;border:0;border-radius:4px;cursor:pointer}
 #downloadLogBtn:hover{background-color:#004578}
-.close-btn{background-color:#dc2626;color:white;height:30px;width:35px;padding:0;font-size:14px;font-weight:bold;display:flex;justify-content:center;align-items:center}
+.close-btn{background-color:#dc2626;color:white;height:30px;width:35px;padding:0;font-size:14px;font-weight:bold;display:flex;justify-content:center;align-items:center;border:0;border-radius:4px;cursor:pointer}
 .close-btn:hover{background-color:#b91c1c}
 .modal-body{overflow-y:auto;flex-grow:1}
-@media(max-width:1300px){
-.forms-container,.tables-container{grid-template-columns:1fr}
-.form-grid{grid-template-columns:1fr}
-}
+#assignmentModal .modal-content{width:650px;max-width:95%;max-height:none}
+#assignmentModal .modal-header{margin-bottom:12px}
+#assignmentModal .modal-header h2{font-size:18px}
+.assignment-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.assignment-form .form-group{display:flex;flex-direction:column}
+.assignment-form .form-group.full-width{grid-column:1/-1}
+.assignment-form label{margin-bottom:3px;font-weight:bold;font-size:11px}
+.required-label{color:#2563eb!important}
+.required-input{background-color:#fef08a!important;color:#1e3a8a!important;font-weight:bold}
+.required-input option{background-color:white;color:#222}
+input,select{width:100%;height:36px;padding:4px 6px;border:1px solid #ccc;border-radius:4px;font-size:13px;background-color:white}
+.assignment-buttons{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:5px}
+.assignment-add-btn{background-color:#166534;color:white;min-width:110px;height:36px;font-weight:bold;border:0;border-radius:4px;cursor:pointer}
+.assignment-add-btn:hover{background-color:#14532d}
+.assignment-move-btn{background-color:#2563eb;color:white;min-width:90px;height:36px;font-weight:bold;border:0;border-radius:4px;cursor:pointer}
+.assignment-move-btn:hover{background-color:#1d4ed8}
+.assignment-cancel-btn{background-color:#6b7280;color:white;min-width:90px;height:36px;border:0;border-radius:4px;cursor:pointer}
+.assignment-cancel-btn:hover{background-color:#4b5563}
+.assignment-message{grid-column:1/-1;min-height:18px;color:#dc2626;font-size:12px;font-weight:bold}
+.location-settings-buttons{margin-top:10px;display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px}
+.location-startup-btn,.location-save-btn{min-height:36px;padding:0 16px;border:0;border-radius:4px;color:white;font-weight:bold;cursor:pointer}
+.location-startup-btn{background-color:#2563eb}
+.location-startup-btn:hover{background-color:#1d4ed8}
+.location-save-btn{background-color:#166534}
+.location-save-btn:hover{background-color:#14532d}
+
+@media(max-width:1300px){.tables-container{grid-template-columns:1fr}}
 @media(max-width:700px){
 html,body{width:100%;min-width:0;overflow-x:hidden}
 body{font-size:14px}
@@ -96,23 +107,22 @@ body{font-size:14px}
 #clearAllDataBtn{grid-column:1/-1}
 .android-logo{right:8px;top:20px;width:30px;height:30px}
 .container{width:100%;max-width:none;margin:6px 0;padding:0 6px}
-.forms-container{grid-template-columns:1fr;gap:8px;margin-bottom:8px}
-.card{padding:8px}
-.card h2{font-size:15px;margin-bottom:8px}
-.form-grid{grid-template-columns:1fr 1fr;gap:6px}
-.form-group label{font-size:10px}
-input,select{height:36px;font-size:13px}
-.form-group:nth-child(2),.form-group:nth-child(3),.form-group:nth-child(4),.form-group:nth-child(5),.form-group:nth-child(6){grid-column:auto}
-.form-group:nth-child(7){grid-column:1/-1}
-.form-group:nth-child(7) button{width:100%;height:36px;font-size:13px;font-weight:bold}
-.message{font-size:11px}
 .tables-container{grid-template-columns:1fr;gap:8px}
 .site-container{padding:7px;width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .site-header-row{padding-bottom:5px;margin-bottom:5px}
 .site-container h2{font-size:15px}
 .refresh-btn{height:28px;font-size:11px;padding:0 8px}
-.ramp-table{min-width:760px}
+.ramp-table{min-width:850px}
 .ramp-table th,.ramp-table td{white-space:nowrap;font-size:11px;padding:5px 6px}
+#assignmentModal .modal-content{width:calc(100vw - 16px)!important;max-width:calc(100vw - 16px);padding:10px;border-radius:7px}
+#assignmentModal .modal-header{padding-bottom:8px;margin-bottom:10px}
+#assignmentModal .modal-header h2{font-size:16px;line-height:20px}
+.assignment-form{grid-template-columns:1fr}
+.assignment-form .form-group.full-width{grid-column:auto}
+.assignment-buttons{grid-column:auto;display:grid;grid-template-columns:1fr 1fr;margin-top:4px}
+.assignment-add-btn,.assignment-move-btn,.assignment-cancel-btn{width:100%}
+.assignment-form label{font-size:11px}
+input,select{height:38px;font-size:13px}
 .modal-content{width:calc(100vw - 16px)!important;max-width:calc(100vw - 16px);max-height:92vh;padding:10px;border-radius:7px}
 .modal-header{padding-bottom:8px;margin-bottom:8px;gap:6px}
 .modal-header h2{font-size:16px;line-height:20px}
@@ -121,7 +131,7 @@ input,select{height:36px;font-size:13px}
 .close-btn{width:32px;height:30px}
 .danger-btn,#downloadLogBtn{height:30px;padding:0 7px;font-size:10px}
 .modal-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.modal-body .ramp-table{min-width:850px}
+.modal-body .ramp-table{min-width:950px}
 #locationsTextarea{width:100%!important;height:300px!important;font-size:12px!important}
 #layoutModal .modal-body{overflow-y:auto;overflow-x:hidden}
 #layoutModal img{width:100%;height:auto}
@@ -134,954 +144,1783 @@ input,select{height:36px;font-size:13px}
 .header-left-actions .large-bold-btn{font-size:11px!important}
 .header-actions{grid-template-columns:1fr}
 #clearAllDataBtn{grid-column:auto}
-.form-grid{grid-template-columns:1fr}
-.form-group:nth-child(2),.form-group:nth-child(3),.form-group:nth-child(4),.form-group:nth-child(5),.form-group:nth-child(6),.form-group:nth-child(7){grid-column:auto}
-.form-group:nth-child(7){grid-column:1/-1}
-.modal-header h2{font-size:14px}
+#assignmentModal .modal-header h2{font-size:14px}
+.assignment-buttons{grid-template-columns:1fr}
 }
 </style>
 </head>
+
 <body>
+
 <div class="header">
-<div class="header-left">
-<h1>TruckFlow</h1>
-<div class="flow-img-container"><img src="flow.jpg" alt="Flow Graphic"></div>
-<div class="header-left-actions">
-<button type="button" class="header-btn large-bold-btn" id="openLayoutBtn">LayOut</button>
-<button type="button" class="header-btn large-bold-btn" id="openHistoryBtn">TruckList-[RealTime]</button>
-</div>
-</div>
-<div class="header-right">
-<div class="header-actions">
-<button type="button" class="header-btn" id="openSettingsBtn">Location Setting's</button>
-<button type="button" class="header-btn" id="openLogBtn">Log.txt</button>
-<button type="button" class="header-btn" id="clearAllDataBtn">ClearAllData</button>
-</div>
-</div>
-<img src="android.jpg" alt="Android" class="android-logo" id="openAndroidModalBtn" title="Kattints a nagyításhoz">
+    <div class="header-left">
+        <h1>TruckFlow</h1>
+        <div class="flow-img-container"><img src="flow.jpg" alt="Flow Graphic"></div>
+        <div class="header-left-actions">
+            <button type="button" class="header-btn large-bold-btn" id="openLayoutBtn">LayOut</button>
+            <button type="button" class="header-btn large-bold-btn" id="openHistoryBtn">TruckList-[RealTime]</button>
+        </div>
+    </div>
+    <div class="header-right">
+        <div class="header-actions">
+            <button type="button" class="header-btn" id="openSettingsBtn">Location Setting's</button>
+            <button type="button" class="header-btn" id="openLogBtn">Log.txt</button>
+            <button type="button" class="header-btn" id="clearAllDataBtn">ClearAllData</button>
+        </div>
+    </div>
+    <img src="android.jpg" alt="Android" class="android-logo" id="openAndroidModalBtn" title="Kattints a nagyításhoz">
 </div>
 
 <div class="container">
-<div class="forms-container">
-<div class="card">
-<h2>X-Site Ramp Add</h2>
-<div class="form-grid">
-<div class="form-group">
-<label for="xRampSelect" class="required-label">Rámpa *</label>
-<select id="xRampSelect" class="required-input"><option value="">-- Válassz --</option></select>
-</div>
-<div class="form-group">
-<label for="xTruckInput" class="required-label">Kamion / útvonal *</label>
-<input type="text" id="xTruckInput" class="required-input" placeholder="Pl. Bekescsaba" maxlength="20">
-</div>
-<div class="form-group">
-<label for="xRouteTypeSelect" class="required-label">RouteType *</label>
-<select id="xRouteTypeSelect" class="required-input">
-<option value="">--- Type ---</option>
-<option value="CITY FIX">CITY FIX</option>
-<option value="CITY-Belföld">CITY-Belföld</option>
-<option value="CITY-Külföld">CITY-Külföld</option>
-<option value="DEPO-Belföld">DEPO-Belföld</option>
-<option value="DEPO-Külföld">DEPO-Külföld</option>
-<option value="ManiFest-Belföld">ManiFest-Belföld</option>
-<option value="ManiFest-Külföld">ManiFest-Külföld</option>
-<option value="Other">Other</option>
-</select>
-</div>
-<div class="form-group">
-<label for="xPlateInput">Rendszám</label>
-<input type="text" id="xPlateInput" placeholder="Pl. AA123BB" maxlength="10">
-</div>
-<div class="form-group">
-<label for="xSlotInput">Időkapu</label>
-<input type="text" id="xSlotInput" placeholder="Pl. 10:00" maxlength="5">
-</div>
-<div class="form-group">
-<label for="xOperationSelect" class="required-label">Művelet *</label>
-<select id="xOperationSelect" class="required-input">
-<option value="">--- Process ---</option>
-<option value="Leszedés">Leszedés</option>
-<option value="Felpakolás">Felpakolás</option>
-</select>
-</div>
-<div class="form-group"><button type="button" id="xAssignBtn">Hozzáadás</button></div>
-</div>
-<div id="xMessage" class="message"></div>
+    <div class="tables-container">
+        <div class="site-container">
+            <div class="site-header-row">
+                <h2>X-Site rámpák</h2>
+                <button type="button" class="refresh-btn" id="xRefreshBtn">Frissítés</button>
+            </div>
+            <table class="ramp-table">
+                <thead><tr>
+                    <th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th>
+                    <th>Rendszám</th><th>Időkapu</th><th>Művelet</th><th>Idő</th><th>Comment</th><th></th>
+                </tr></thead>
+                <tbody id="xRampTable"></tbody>
+            </table>
+        </div>
+
+        <div class="site-container">
+            <div class="site-header-row">
+                <h2>D-Site rámpák</h2>
+                <button type="button" class="refresh-btn" id="dRefreshBtn">Frissítés</button>
+            </div>
+            <table class="ramp-table">
+                <thead><tr>
+                    <th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th>
+                    <th>Rendszám</th><th>Időkapu</th><th>Művelet</th><th>Idő</th><th>Comment</th><th></th>
+                </tr></thead>
+                <tbody id="dRampTable"></tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<div class="card">
-<h2>D-Site Ramp Add</h2>
-<div class="form-grid">
-<div class="form-group">
-<label for="dRampSelect" class="required-label">Rámpa *</label>
-<select id="dRampSelect" class="required-input"><option value="">-- Válassz --</option></select>
-</div>
-<div class="form-group">
-<label for="dTruckInput" class="required-label">Kamion / útvonal *</label>
-<input type="text" id="dTruckInput" class="required-input" placeholder="Pl. Bekescsaba" maxlength="20">
-</div>
-<div class="form-group">
-<label for="dRouteTypeSelect" class="required-label">RouteType *</label>
-<select id="dRouteTypeSelect" class="required-input">
-<option value="">--- Type ---</option>
-<option value="CITY FIX">CITY FIX</option>
-<option value="CITY-Belföld">CITY-Belföld</option>
-<option value="CITY-Külföld">CITY-Külföld</option>
-<option value="DEPO-Belföld">DEPO-Belföld</option>
-<option value="DEPO-Külföld">DEPO-Külföld</option>
-<option value="ManiFest-Belföld">ManiFest-Belföld</option>
-<option value="ManiFest-Külföld">ManiFest-Külföld</option>
-<option value="Other">Other</option>
-</select>
-</div>
-<div class="form-group">
-<label for="dPlateInput">Rendszám</label>
-<input type="text" id="dPlateInput" placeholder="Pl. AA123BB" maxlength="10">
-</div>
-<div class="form-group">
-<label for="dSlotInput">Időkapu</label>
-<input type="text" id="dSlotInput" placeholder="Pl. 10:00" maxlength="5">
-</div>
-<div class="form-group">
-<label for="dOperationSelect" class="required-label">Művelet *</label>
-<select id="dOperationSelect" class="required-input">
-<option value="">--- Process ---</option>
-<option value="Leszedés">Leszedés</option>
-<option value="Felpakolás">Felpakolás</option>
-</select>
-</div>
-<div class="form-group"><button type="button" id="dAssignBtn">Hozzáadás</button></div>
-</div>
-<div id="dMessage" class="message"></div>
-</div>
-</div>
-
-<div class="tables-container">
-<div class="site-container">
-<div class="site-header-row">
-<h2>X-Site rámpák</h2>
-<button type="button" class="refresh-btn" id="xRefreshBtn">Frissítés</button>
-</div>
-<table class="ramp-table">
-<thead><tr><th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th><th>Rendszám</th><th>Időkapu</th><th>Művelet</th><th>Idő</th><th></th></tr></thead>
-<tbody id="xRampTable"></tbody>
-</table>
-</div>
-
-<div class="site-container">
-<div class="site-header-row">
-<h2>D-Site rámpák</h2>
-<button type="button" class="refresh-btn" id="dRefreshBtn">Frissítés</button>
-</div>
-<table class="ramp-table">
-<thead><tr><th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th><th>Rendszám</th><th>Időkapu</th><th>Művelet</th><th>Idő</th><th></th></tr></thead>
-<tbody id="dRampTable"></tbody>
-</table>
-</div>
-</div>
+<div class="modal-overlay" id="assignmentModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="assignmentModalTitle">Rámpa hozzárendelés</h2>
+            <div class="modal-header-actions"><button type="button" class="close-btn" id="closeAssignmentBtn">X</button></div>
+        </div>
+        <div class="modal-body">
+            <div class="assignment-form">
+                <div class="form-group">
+                    <label for="modalRampSelect" class="required-label">Rámpa *</label>
+                    <select id="modalRampSelect" class="required-input"><option value="">-- Válassz --</option></select>
+                </div>
+                <div class="form-group">
+                    <label for="modalTruckInput" class="required-label">Kamion / útvonal *</label>
+                    <input type="text" id="modalTruckInput" class="required-input" placeholder="Pl. Bekescsaba" maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label for="modalRouteTypeSelect" class="required-label">RouteType *</label>
+                    <select id="modalRouteTypeSelect" class="required-input">
+                        <option value="">--- Type ---</option>
+                        <option value="CITY FIX">CITY FIX</option>
+                        <option value="CITY-Belföld">CITY-Belföld</option>
+                        <option value="CITY-Külföld">CITY-Külföld</option>
+                        <option value="DEPO-Belföld">DEPO-Belföld</option>
+                        <option value="DEPO-Külföld">DEPO-Külföld</option>
+                        <option value="ManiFest-Belföld">ManiFest-Belföld</option>
+                        <option value="ManiFest-Külföld">ManiFest-Külföld</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modalPlateInput">Rendszám</label>
+                    <input type="text" id="modalPlateInput" placeholder="Pl. AA123BB" maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label for="modalSlotInput">Időkapu</label>
+                    <input type="text" id="modalSlotInput" placeholder="Pl. 10:00" maxlength="5">
+                </div>
+                <div class="form-group">
+                    <label for="modalOperationSelect" class="required-label">Művelet *</label>
+                    <select id="modalOperationSelect" class="required-input">
+                        <option value="">--- Process ---</option>
+                        <option value="Leszedés">Leszedés</option>
+                        <option value="Felpakolás">Felpakolás</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label for="modalCommentInput">Comment</label>
+                    <input type="text" id="modalCommentInput" placeholder="Pl. Rakodás kész" maxlength="30">
+                </div>
+                <div class="form-group full-width">
+                    <label for="modalMoveRampSelect">Move cél rámpa</label>
+                    <select id="modalMoveRampSelect"><option value="">-- Válaszd ki a cél rámpát --</option></select>
+                </div>
+                <div id="assignmentMessage" class="assignment-message"></div>
+                <div class="assignment-buttons">
+                    <button type="button" class="assignment-cancel-btn" id="cancelAssignmentBtn">Mégse</button>
+                    <button type="button" class="assignment-add-btn" id="modalAssignBtn">Hozzáadás</button>
+                    <button type="button" class="assignment-move-btn" id="modalMoveBtn">Move</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal-overlay" id="settingsModal">
-<div class="modal-content" style="width:700px">
-<div class="modal-header">
-<h2>Rámpákhoz tartozó tárhelyek szerkesztése</h2>
-<div class="modal-header-actions"><button type="button" class="close-btn" id="closeSettingsBtn">X</button></div>
-</div>
-<div class="modal-body" style="padding:10px">
-<p style="font-size:12px;color:#555;margin-top:0">
-Add meg a rámpákat, a hozzájuk tartozó tárhelyet és RouteType-ot soronként.
-<br>Példa: <code>X-03; B-raktár-10; CITY</code>
-</p>
-<textarea id="locationsTextarea" style="width:100%;height:250px;padding:8px;font-family:monospace;font-size:12px;border:1px solid #ccc;border-radius:4px;resize:vertical;"></textarea>
-<div style="margin-top:10px;display:flex;justify-content:flex-end;gap:10px">
-<button type="button" id="saveLocationsBtn" style="background-color:#166534;color:white;height:32px;padding:0 15px;font-weight:bold">Mentés</button>
-</div>
-</div>
-</div>
+    <div class="modal-content" style="width:1200px; max-width:95%">
+        <div class="modal-header">
+            <h2>Rámpákhoz tartozó tárhelyek szerkesztése</h2>
+            <div class="modal-header-actions"><button type="button" class="close-btn" id="closeSettingsBtn">X</button></div>
+        </div>
+        <div class="modal-body" style="padding:10px">
+            <p style="font-size:12px;color:#555;margin-top:0">
+                Illeszd be a teljes rámpalistát pontosvesszővel (<code>;</code>) elválasztva.
+                Az első sor a fejléc, ezt a rendszer nem tölti be. A sorrend és a 10 oszlop kötelező.
+                Az Active/Inactive oszlopban <b>On</b> = aktív, <b>Off</b> = inaktív.
+                A Kamion / útvonal, Rendszám, Időkapu, Művelet és Idő oszlop csak a lista formátumához kell;
+                ezekből a Mentés nem hoz létre kamion-hozzárendelést.
+            </p>
+            <textarea id="locationsTextarea" spellcheck="false" style="width:100%;height:300px;padding:8px;font-family:monospace;font-size:12px;border:1px solid #ccc;border-radius:4px;resize:vertical;"></textarea>
+            <div class="location-settings-buttons">
+                <button type="button" id="startupLocationsBtn" class="location-startup-btn">StartUp</button>
+                <button type="button" id="saveLocationsBtn" class="location-save-btn">Mentés</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal-overlay" id="historyModal">
-<div class="modal-content">
-<div class="modal-header">
-<h2>Elhagyott / Távozott autók előzményei</h2>
-<div class="modal-header-actions">
-<button type="button" class="danger-btn" id="clearHistoryBtn">Lista ürítése</button>
-<button type="button" class="close-btn" id="closeHistoryBtn">X</button>
-</div>
-</div>
-<div class="modal-body">
-<table class="ramp-table">
-<thead><tr><th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th><th>Rendszám</th><th>Időkapu</th><th>Művelet</th><th>Érkezési idő</th><th>Távozás ideje</th></tr></thead>
-<tbody id="historyTableBody"></tbody>
-</table>
-</div>
-</div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Elhagyott / Távozott autók előzményei</h2>
+            <div class="modal-header-actions">
+                <button type="button" class="danger-btn" id="clearHistoryBtn">Lista ürítése</button>
+                <button type="button" class="close-btn" id="closeHistoryBtn">X</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <table class="ramp-table">
+                <thead><tr>
+                    <th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th><th>Rendszám</th>
+                    <th>Időkapu</th><th>Művelet</th><th>Comment</th><th>Érkezési idő</th><th>Távozás ideje</th>
+                </tr></thead>
+                <tbody id="historyTableBody"></tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <div class="modal-overlay" id="logModal">
-<div class="modal-content">
-<div class="modal-header">
-<h2>log txt tartalom</h2>
-<div class="modal-header-actions">
-<button type="button" id="downloadLogBtn">Log.txt letöltése</button>
-<button type="button" class="danger-btn" id="clearLogBtn">Napló törlése</button>
-<button type="button" class="close-btn" id="closeLogBtn">X</button>
-</div>
-</div>
-<div class="modal-body">
-<table class="ramp-table">
-<thead><tr><th>#RowId</th><th>UserName</th><th>DateTime</th><th>Evet()</th></tr></thead>
-<tbody id="logTableBody"></tbody>
-</table>
-</div>
-</div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>log txt tartalom</h2>
+            <div class="modal-header-actions">
+                <button type="button" id="downloadLogBtn">Log.txt letöltése</button>
+                <button type="button" class="danger-btn" id="clearLogBtn">Napló törlése</button>
+                <button type="button" class="close-btn" id="closeLogBtn">X</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <table class="ramp-table">
+                <thead><tr><th>#RowId</th><th>UserName</th><th>DateTime</th><th>Evet()</th></tr></thead>
+                <tbody id="logTableBody"></tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <div class="modal-overlay" id="layoutModal">
-<div class="modal-content">
-<div class="modal-header">
-<h2>LayOut</h2>
-<div class="modal-header-actions"><button type="button" class="close-btn" id="closeLayoutBtn">X</button></div>
-</div>
-<div class="modal-body" style="text-align:center;padding:10px">
-<img src="WH_LayOut.png" alt="LayOut" style="max-width:100%;height:auto;display:block;margin:0 auto;border-radius:4px">
-</div>
-</div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>LayOut</h2>
+            <div class="modal-header-actions"><button type="button" class="close-btn" id="closeLayoutBtn">X</button></div>
+        </div>
+        <div class="modal-body" style="text-align:center;padding:10px">
+            <img src="WH_LayOut.png" alt="LayOut" style="max-width:100%;height:auto;display:block;margin:0 auto;border-radius:4px">
+        </div>
+    </div>
 </div>
 
 <div class="modal-overlay" id="androidModal">
-<div class="modal-content" style="width:auto;max-width:90vw">
-<div class="modal-header">
-<h2>DevelopedBy</h2>
-<div class="modal-header-actions"><button type="button" class="close-btn" id="closeAndroidModalBtn">X</button></div>
-</div>
-<div class="modal-body" style="text-align:center;padding:15px">
-<img src="android.jpg" alt="Android Nagyítva" style="max-width:100%;max-height:70vh;object-fit:contain;border-radius:4px">
-</div>
-</div>
+    <div class="modal-content" style="width:auto;max-width:90vw">
+        <div class="modal-header">
+            <h2>DevelopedBy</h2>
+            <div class="modal-header-actions"><button type="button" class="close-btn" id="closeAndroidModalBtn">X</button></div>
+        </div>
+        <div class="modal-body" style="text-align:center;padding:15px">
+            <img src="android.jpg" alt="Android Nagyítva" style="max-width:100%;max-height:70vh;object-fit:contain;border-radius:4px">
+        </div>
+    </div>
 </div>
 
 <script>
+/* ============================================================
+   FIREBASE
+   ============================================================ */
+
 var adminPassword="aaa";
+
 var firebaseConfig={
-apiKey:"AIzaSyB4wIUpERNWb2dJkyESSKcLhCOFFleCprA",
-authDomain:"truckflow-webapp.firebaseapp.com",
-projectId:"truckflow-webapp",
-storageBucket:"truckflow-webapp.appspot.com",
-messagingSenderId:"513950754358",
-appId:"1:513950754358:web:787114a6f038a7567a9a97",
-measurementId:"G-XDWMXD781G"
+    apiKey:"AIzaSyB4wIUpERNWb2dJkyESSKcLhCOFFleCprA",
+    authDomain:"truckflow-webapp.firebaseapp.com",
+    projectId:"truckflow-webapp",
+    storageBucket:"truckflow-webapp.appspot.com",
+    messagingSenderId:"513950754358",
+    appId:"1:513950754358:web:787114a6f038a7567a9a97",
+    measurementId:"G-XDWMXD781G"
 };
+
 firebase.initializeApp(firebaseConfig);
 var db=firebase.database();
+
 var cachedAssignments=[];
 var cachedHistory=[];
 var cachedLogs=[];
 var cachedLocations={};
 var cachedDefaultLocations={};
+var showAssignmentsOnRamps=false;
+
+
+/* ============================================================
+   USER
+   ============================================================ */
 
 function GetCurrentUser(){
-var user=localStorage.getItem("TruckFlow_User");
-if(!user){
-user=prompt("Add meg a neved (UserName a naplóhoz):")||"Ismeretlen";
-localStorage.setItem("TruckFlow_User",user);
+    var user=localStorage.getItem("TruckFlow_User");
+
+    if(!user){
+        user=prompt("Add meg a neved (UserName a naplóhoz):")||"Ismeretlen";
+        localStorage.setItem("TruckFlow_User",user);
+    }
+
+    return user;
 }
-return user;
-}
+
+
+/* ============================================================
+   PASSWORD
+   ============================================================ */
 
 function CheckPassword(){
-var inputPass=prompt("Kérlek, add meg a jelszót a művelethez:");
-if(inputPass===adminPassword)return true;
-if(inputPass!==null)alert("Hibás jelszó!");
-return false;
+    var inputPass=prompt("Kérlek, add meg a jelszót a művelethez:");
+
+    if(inputPass===adminPassword)return true;
+
+    if(inputPass!==null)alert("Hibás jelszó!");
+
+    return false;
 }
+
+
+/* ============================================================
+   LOG
+   ============================================================ */
 
 function WriteLog(EventNameV){
-var rowId=cachedLogs.length+1;
-var userNameV=GetCurrentUser();
-var nowV=new Date().toISOString().replace("T"," ").substring(0,19);
-var newLog={rowId:rowId,userName:userNameV,dateTime:nowV,event:EventNameV};
-cachedLogs.push(newLog);
-db.ref("logs").set(cachedLogs);
+    var rowId=cachedLogs.length+1;
+    var userNameV=GetCurrentUser();
+    var nowV=new Date().toISOString().replace("T"," ").substring(0,19);
+
+    var newLog={
+        rowId:rowId,
+        userName:userNameV,
+        dateTime:nowV,
+        event:EventNameV
+    };
+
+    cachedLogs.push(newLog);
+    db.ref("logs").set(cachedLogs);
 }
 
-function GetAssignments(){return cachedAssignments}
+
+/* ============================================================
+   ASSIGNMENTS
+   ============================================================ */
+
+function GetAssignments(){return cachedAssignments;}
+
 function SaveAssignments(AssignmentsV){
-cachedAssignments=AssignmentsV;
-db.ref("assignments").set(AssignmentsV);
-}
-function GetHistory(){return cachedHistory}
-function SaveHistory(HistoryV){
-cachedHistory=HistoryV;
-db.ref("history").set(HistoryV);
+    cachedAssignments=AssignmentsV;
+    db.ref("assignments").set(AssignmentsV);
 }
 
-function GetLocations(){
-var result={};
-Object.keys(cachedLocations||{}).forEach(function(key){
-result[key]=cachedLocations[key];
-});
-Object.keys(cachedDefaultLocations||{}).forEach(function(key){
-result[key]=cachedDefaultLocations[key];
-});
-return result;
+
+/* ============================================================
+   HISTORY
+   ============================================================ */
+
+function GetHistory(){return cachedHistory;}
+
+function SaveHistory(HistoryV){
+    cachedHistory=HistoryV;
+    db.ref("history").set(HistoryV);
 }
+
+
+/* ============================================================
+   LOCATIONS
+   ============================================================ */
+
+function GetLocations(){return cachedLocations||{};}
 
 function SaveLocationsMap(LocationsV){
-cachedLocations=LocationsV;
-db.ref("locations").set(LocationsV);
+    cachedLocations=LocationsV||{};
+    cachedDefaultLocations={};
+    db.ref("locations").set(cachedLocations);
 }
 
-function LoadDefaultLocationsMap(){
-var locs={};
-var xEl=document.getElementById("x_locations_data");
-var xText=xEl?xEl.textContent:"";
-xText.split(/\r?\n/).forEach(function(line){
-line=line.trim();
-if(!line)return;
-var parts=line.split(";");
-if(parts.length>=2){
-var rampName=parts[0].trim().toUpperCase();
-var locationName=parts[1].trim();
-var routeTypeName=parts.length>=3?parts.slice(2).join(";").trim():"";
-if(!rampName.startsWith("X")&&!rampName.startsWith("D")){
-rampName="X-"+rampName.padStart(2,"0");
-}
-locs[rampName]={location:locationName,routeType:routeTypeName};
-}
-});
 
-var dEl=document.getElementById("d_locations_data");
-var dText=dEl?dEl.textContent:"";
-dText.split(/\r?\n/).forEach(function(line){
-line=line.trim();
-if(!line)return;
-var parts=line.split(";");
-if(parts.length>=2){
-var rampName=parts[0].trim().toUpperCase();
-var locationName=parts[1].trim();
-var routeTypeName=parts.length>=3?parts.slice(2).join(";").trim():"";
-if(!rampName.startsWith("X")&&!rampName.startsWith("D")){
-rampName="D-"+rampName.padStart(2,"0");
+/* ============================================================
+   STARTUP ALAP RÁMPALISTA
+   ============================================================ */
+
+function CreateStartupLocations(){
+    var startupLocations={};
+
+    startupLocations["XD-01"]={
+        location:"",
+        routeType:"",
+        comment:"",
+        active:"Off"
+    };
+
+    startupLocations["XD-02"]={
+        location:"",
+        routeType:"",
+        comment:"",
+        active:"Off"
+    };
+
+    for(var xRampNumber=3;xRampNumber<=40;xRampNumber++){
+        var xRampName="X-"+String(xRampNumber).padStart(2,"0");
+
+        startupLocations[xRampName]={
+            location:"",
+            routeType:"",
+            comment:"",
+            active:"Off"
+        };
+    }
+
+    for(var dRampNumber=1;dRampNumber<=40;dRampNumber++){
+        var dRampName="D-"+String(dRampNumber).padStart(2,"0");
+
+        startupLocations[dRampName]={
+            location:"",
+            routeType:"",
+            comment:"",
+            active:"Off"
+        };
+    }
+
+    return startupLocations;
 }
-locs[rampName]={location:locationName,routeType:routeTypeName};
+
+
+/* ============================================================
+   RAMP DISPLAY MODE
+   ============================================================ */
+
+function SetRampDisplayMode(ShowAssignmentsV){
+    showAssignmentsOnRamps=!!ShowAssignmentsV;
+    db.ref("settings/showAssignmentsOnRamps").set(showAssignmentsOnRamps);
+    RenderRamps();
 }
-});
-return locs;
+
+
+/* ============================================================
+   RAMP AKTÍV ÁLLAPOT
+   ============================================================ */
+
+function IsRampActive(LocationDataV){
+    if(!LocationDataV||typeof LocationDataV!=="object")return true;
+
+    var activeValue=String(LocationDataV.active||"").trim().toUpperCase();
+
+    /* Régi konfigurációban, ahol nincs active mező, a rámpa aktív marad. */
+    if(activeValue==="")return true;
+
+    return activeValue==="ON";
 }
+
+
+/* ============================================================
+   TÖRLŐGOMB HTML
+   A piros X akkor jelenik meg, ha a rámpán van hozzárendelés.
+   Nem vizsgál On / Off állapotot.
+   ============================================================ */
+
+function GetDeleteButtonHtml(RampV) {
+
+    var AssignmentsV = GetAssignments();
+
+    var AssignmentV = AssignmentsV.find(function (ItemV) {
+        return String(ItemV.ramp || "").trim().toUpperCase() ===
+               String(RampV || "").trim().toUpperCase();
+    });
+
+    if (!AssignmentV) {
+        return "";
+    }
+
+    return '<button type="button" class="delete-btn" ' +
+           'data-delete-ramp="' + RampV + '">X</button>';
+}
+
+/* ============================================================
+   RAMP LIST
+   Az Off rámpák is látszanak a táblázatban.
+   ============================================================ */
 
 function GetXRamps(){
-var xRamps=["XD-01","XD-02"];
-for(var i=3;i<=40;i++){
-xRamps.push("X-"+String(i).padStart(2,"0"));
-}
-return xRamps;
+    var locations=GetLocations();
+
+    return Object.keys(locations).filter(function(rampName){
+        var normalized=String(rampName).trim().toUpperCase();
+        return normalized.startsWith("X");
+    });
 }
 
 function GetDRamps(){
-var dRamps=[];
-for(var i=1;i<=40;i++){
-dRamps.push("D-"+String(i).padStart(2,"0"));
-}
-return dRamps;
-}
+    var locations=GetLocations();
 
-function CreateRampOptions(){
-var XRampSelect=document.getElementById("xRampSelect");
-var DRampSelect=document.getElementById("dRampSelect");
-if(!XRampSelect||!DRampSelect)return;
-
-XRampSelect.innerHTML='<option value="">-- Válassz --</option>';
-DRampSelect.innerHTML='<option value="">-- Válassz --</option>';
-
-GetXRamps().forEach(function(rampName){
-var opt=document.createElement("option");
-opt.value=rampName;
-opt.textContent=rampName;
-XRampSelect.appendChild(opt);
-});
-
-GetDRamps().forEach(function(rampName){
-var opt=document.createElement("option");
-opt.value=rampName;
-opt.textContent=rampName;
-DRampSelect.appendChild(opt);
-});
+    return Object.keys(locations).filter(function(rampName){
+        var normalized=String(rampName).trim().toUpperCase();
+        return normalized.startsWith("D");
+    });
 }
 
-function ShowMessage(ElementIdV,MessageV){
-var El=document.getElementById(ElementIdV);
-if(!El)return;
-El.textContent=MessageV;
-setTimeout(function(){El.textContent=""},3000);
-}
+
+/* ============================================================
+   ROUTETYPE
+   ============================================================ */
 
 function GetRouteTypeClass(RouteTypeV){
-var route=(RouteTypeV||"").trim().toUpperCase();
-if(route==="CITY FIX")return "route-city-fix";
-if(route.startsWith("CITY"))return "route-city";
-if(route.startsWith("MANIFEST"))return "route-manifest";
-if(route.startsWith("DEPO"))return "route-depo";
-return "route-other";
+    var route=(RouteTypeV||"").trim().toUpperCase();
+
+    if(route==="CITY FIX")return "route-city-fix";
+    if(route.startsWith("CITY"))return "route-city";
+    if(route.startsWith("MANIFEST"))return "route-manifest";
+    if(route.startsWith("DEPO"))return "route-depo";
+
+    return "route-other";
 }
+
+
+/* ============================================================
+   ROUTETYPE SELECT
+   ============================================================ */
 
 function SetRouteTypeSelectValue(SelectElV,RouteTypeV){
-if(!SelectElV)return;
-RouteTypeV=(RouteTypeV||"").trim();
-if(!RouteTypeV){
-SelectElV.value="";
-return;
-}
-var exists=false;
-for(var i=0;i<SelectElV.options.length;i++){
-if(SelectElV.options[i].value===RouteTypeV){
-exists=true;
-break;
-}
-}
-if(!exists){
-var opt=document.createElement("option");
-opt.value=RouteTypeV;
-opt.textContent=RouteTypeV;
-SelectElV.appendChild(opt);
-}
-SelectElV.value=RouteTypeV;
-}
+    if(!SelectElV)return;
 
-function SetupRampRouteType(RampSelectIdV,RouteTypeSelectIdV){
-var RampSelect=document.getElementById(RampSelectIdV);
-var RouteTypeSelect=document.getElementById(RouteTypeSelectIdV);
-if(!RampSelect||!RouteTypeSelect)return;
+    RouteTypeV=(RouteTypeV||"").trim();
 
-RampSelect.addEventListener("change",function(){
-var selectedRamp=RampSelect.value;
-if(!selectedRamp){
-RouteTypeSelect.value="";
-return;
-}
-var locations=GetLocations();
-var locationData=locations[selectedRamp];
-var routeType="";
-if(locationData&&typeof locationData==="object"){
-routeType=locationData.routeType||"";
-}
-SetRouteTypeSelectValue(RouteTypeSelect,routeType);
-});
+    if(!RouteTypeV){
+        SelectElV.value="";
+        return;
+    }
+
+    var exists=false;
+
+    for(var i=0;i<SelectElV.options.length;i++){
+        if(SelectElV.options[i].value===RouteTypeV){
+            exists=true;
+            break;
+        }
+    }
+
+    if(!exists){
+        var opt=document.createElement("option");
+        opt.value=RouteTypeV;
+        opt.textContent=RouteTypeV;
+        SelectElV.appendChild(opt);
+    }
+
+    SelectElV.value=RouteTypeV;
 }
 
-function AssignRamp(SitePrefixV){
-WriteLog("AssignRamp("+SitePrefixV+")");
 
-var RampSelectV,TruckInputV,RouteTypeSelectV,PlateInputV,SlotInputV,OperationSelectV,MessageIdV;
+/* ============================================================
+   CREATE RAMP OPTIONS
+   ============================================================ */
 
-if(SitePrefixV==="X"){
-RampSelectV=document.getElementById("xRampSelect");
-TruckInputV=document.getElementById("xTruckInput");
-RouteTypeSelectV=document.getElementById("xRouteTypeSelect");
-PlateInputV=document.getElementById("xPlateInput");
-SlotInputV=document.getElementById("xSlotInput");
-OperationSelectV=document.getElementById("xOperationSelect");
-MessageIdV="xMessage";
-}else{
-RampSelectV=document.getElementById("dRampSelect");
-TruckInputV=document.getElementById("dTruckInput");
-RouteTypeSelectV=document.getElementById("dRouteTypeSelect");
-PlateInputV=document.getElementById("dPlateInput");
-SlotInputV=document.getElementById("dSlotInput");
-OperationSelectV=document.getElementById("dOperationSelect");
-MessageIdV="dMessage";
+function CreateRampOptions(){
+    var RampSelect=document.getElementById("modalRampSelect");
+    var MoveRampSelect=document.getElementById("modalMoveRampSelect");
+    var allRamps=GetXRamps().concat(GetDRamps());
+
+    if(RampSelect){
+        RampSelect.innerHTML='<option value="">-- Válassz --</option>';
+
+        allRamps.forEach(function(rampName){
+            var opt=document.createElement("option");
+            opt.value=rampName;
+            opt.textContent=rampName;
+            RampSelect.appendChild(opt);
+        });
+    }
+
+    if(MoveRampSelect){
+        MoveRampSelect.innerHTML='<option value="">-- Válaszd ki a cél rámpát --</option>';
+
+        allRamps.forEach(function(rampName){
+            var opt=document.createElement("option");
+            opt.value=rampName;
+            opt.textContent=rampName;
+            MoveRampSelect.appendChild(opt);
+        });
+    }
 }
 
-var RampV=RampSelectV.value.trim();
-var TruckV=TruckInputV.value.trim();
-var RouteTypeV=RouteTypeSelectV.value;
-var PlateV=PlateInputV.value.trim();
-var SlotV=SlotInputV.value.trim();
-var OperationV=OperationSelectV.value;
 
-if(RampV===""){
-ShowMessage(MessageIdV,"A rámpa kiválasztása kötelező!");
-return;
-}
-if(TruckV===""){
-ShowMessage(MessageIdV,"A kamion / útvonal megadása kötelező!");
-return;
-}
-if(RouteTypeV===""){
-ShowMessage(MessageIdV,"A RouteType kiválasztása kötelező!");
-return;
-}
-if(OperationV===""){
-ShowMessage(MessageIdV,"A művelet kiválasztása kötelező!");
-return;
-}
+/* ============================================================
+   RAMP SELECT -> ROUTETYPE
+   ============================================================ */
 
-var AssignmentsV=GetAssignments();
-var ExistingV=AssignmentsV.find(function(item){return item.ramp===RampV});
+function SetupModalRampRouteType(){
+    var RampSelect=document.getElementById("modalRampSelect");
+    var RouteTypeSelect=document.getElementById("modalRouteTypeSelect");
 
-if(ExistingV){
-var confirmReplace=confirm("A(z) "+RampV+" rámpa jelenleg foglalt ("+ExistingV.truck+"). Lecseréled az újra?");
-if(!confirmReplace)return;
+    if(!RampSelect||!RouteTypeSelect)return;
 
-var HistoryV=GetHistory();
-ExistingV.leftTime=new Date().toLocaleTimeString("hu-HU",{hour:"2-digit",minute:"2-digit"});
-HistoryV.unshift(ExistingV);
-SaveHistory(HistoryV);
+    RampSelect.addEventListener("change",function(){
+        var selectedRamp=RampSelect.value;
 
-AssignmentsV=AssignmentsV.filter(function(item){return item.ramp!==RampV});
+        if(!selectedRamp){
+            RouteTypeSelect.value="";
+            return;
+        }
+
+        var locationData=GetLocations()[selectedRamp];
+        var routeType="";
+
+        if(locationData&&typeof locationData==="object"){
+            routeType=locationData.routeType||"";
+        }
+
+        SetRouteTypeSelectValue(RouteTypeSelect,routeType);
+    });
 }
 
-var NewAssignmentV={
-ramp:RampV,
-truck:TruckV,
-routeType:RouteTypeV,
-plate:PlateV,
-slot:SlotV,
-operation:OperationV,
-time:new Date().toLocaleTimeString("hu-HU",{hour:"2-digit",minute:"2-digit"})
-};
 
-AssignmentsV.push(NewAssignmentV);
-SaveAssignments(AssignmentsV);
+/* ============================================================
+   ÜZENET
+   ============================================================ */
 
-RampSelectV.value="";
-TruckInputV.value="";
-RouteTypeSelectV.value="";
-PlateInputV.value="";
-SlotInputV.value="";
-OperationSelectV.value="";
+function ShowAssignmentMessage(MessageV){
+    var El=document.getElementById("assignmentMessage");
+    if(!El)return;
 
-RenderRamps();
-ShowMessage(MessageIdV,"Sikeres hozzárendelés.");
+    El.textContent=MessageV;
+
+    setTimeout(function(){
+        El.textContent="";
+    },3000);
 }
 
-function DeleteAssignment(RampV){
-WriteLog("DeleteAssignment("+RampV+")");
 
-var ConfirmV=confirm("Biztosan felszabadítod a(z) "+RampV+" rámpát? (Az autó átkerül az előzményekbe)");
-if(!ConfirmV)return;
+/* ============================================================
+   BEVITELI ABLAK MEGNYITÁSA
+   ============================================================ */
 
-var AssignmentsV=GetAssignments();
-var HistoryV=GetHistory();
+function OpenAssignmentModal(RampV){
+    var modal=document.getElementById("assignmentModal");
+    var RampSelect=document.getElementById("modalRampSelect");
+    var TruckInput=document.getElementById("modalTruckInput");
+    var RouteTypeSelect=document.getElementById("modalRouteTypeSelect");
+    var PlateInput=document.getElementById("modalPlateInput");
+    var SlotInput=document.getElementById("modalSlotInput");
+    var OperationSelect=document.getElementById("modalOperationSelect");
+    var CommentInput=document.getElementById("modalCommentInput");
+    var MoveRampSelect=document.getElementById("modalMoveRampSelect");
+    var Title=document.getElementById("assignmentModalTitle");
 
-var targetItem=AssignmentsV.find(function(a){return a.ramp===RampV});
+    RampSelect.value=RampV;
 
-if(targetItem){
-targetItem.leftTime=new Date().toLocaleTimeString("hu-HU",{hour:"2-digit",minute:"2-digit"});
-HistoryV.unshift(targetItem);
-SaveHistory(HistoryV);
+    var AssignmentsV=GetAssignments();
+    var ExistingAssignmentV=AssignmentsV.find(function(item){
+        return item.ramp===RampV;
+    });
+
+    if(ExistingAssignmentV){
+        TruckInput.value=ExistingAssignmentV.truck||"";
+        PlateInput.value=ExistingAssignmentV.plate||"";
+        SlotInput.value=ExistingAssignmentV.slot||"";
+        OperationSelect.value=ExistingAssignmentV.operation||"";
+        CommentInput.value=ExistingAssignmentV.comment||"";
+
+        SetRouteTypeSelectValue(RouteTypeSelect,ExistingAssignmentV.routeType||"");
+        Title.textContent=RampV+" – beviteli ablak / MOVE";
+    }else{
+        var locationData=GetLocations()[RampV];
+        var routeType="";
+
+        if(locationData&&typeof locationData==="object"){
+            routeType=locationData.routeType||"";
+        }
+
+        SetRouteTypeSelectValue(RouteTypeSelect,routeType);
+
+        TruckInput.value="";
+        PlateInput.value="";
+        SlotInput.value="";
+        OperationSelect.value="";
+        CommentInput.value="";
+
+        Title.textContent=RampV+" – beviteli ablak";
+    }
+
+    MoveRampSelect.value="";
+    document.getElementById("assignmentMessage").textContent="";
+    modal.style.display="flex";
+
+    setTimeout(function(){
+        TruckInput.focus();
+    },100);
 }
 
-AssignmentsV=AssignmentsV.filter(function(a){return a.ramp!==RampV});
-SaveAssignments(AssignmentsV);
-RenderRamps();
+
+/* ============================================================
+   BEVITELI ABLAK BEZÁRÁSA
+   ============================================================ */
+
+function CloseAssignmentModal(){
+    document.getElementById("assignmentModal").style.display="none";
 }
+
+
+/* ============================================================
+   KÖZÖS ADATELLENŐRZÉS
+   ============================================================ */
+
+function GetModalAssignmentData(){
+    var RampSelectV=document.getElementById("modalRampSelect");
+    var TruckInputV=document.getElementById("modalTruckInput");
+    var RouteTypeSelectV=document.getElementById("modalRouteTypeSelect");
+    var PlateInputV=document.getElementById("modalPlateInput");
+    var SlotInputV=document.getElementById("modalSlotInput");
+    var OperationSelectV=document.getElementById("modalOperationSelect");
+    var CommentInputV=document.getElementById("modalCommentInput");
+
+    var RampV=RampSelectV.value.trim();
+    var TruckV=TruckInputV.value.trim();
+    var RouteTypeV=RouteTypeSelectV.value;
+    var PlateV=PlateInputV.value.trim();
+    var SlotV=SlotInputV.value.trim();
+    var OperationV=OperationSelectV.value;
+    var CommentV=CommentInputV.value.trim();
+
+    if(RampV===""){
+        ShowAssignmentMessage("A rámpa kiválasztása kötelező!");
+        return null;
+    }
+
+    if(TruckV===""){
+        ShowAssignmentMessage("A kamion / útvonal megadása kötelező!");
+        TruckInputV.focus();
+        return null;
+    }
+
+    if(RouteTypeV===""){
+        ShowAssignmentMessage("A RouteType kiválasztása kötelező!");
+        RouteTypeSelectV.focus();
+        return null;
+    }
+
+    if(OperationV===""){
+        ShowAssignmentMessage("A művelet kiválasztása kötelező!");
+        OperationSelectV.focus();
+        return null;
+    }
+
+    return {
+        ramp:RampV,
+        truck:TruckV,
+        routeType:RouteTypeV,
+        plate:PlateV,
+        slot:SlotV,
+        operation:OperationV,
+        comment:CommentV
+    };
+}
+
+
+/* ============================================================
+   HOZZÁADÁS
+   ============================================================ */
+
+function AssignRampFromModal(){
+    WriteLog("AssignRamp(Modal)");
+
+    var DataV=GetModalAssignmentData();
+    if(!DataV)return;
+
+    var AssignmentsV=GetAssignments();
+    var ExistingV=AssignmentsV.find(function(item){
+        return item.ramp===DataV.ramp;
+    });
+
+    if(ExistingV){
+        var confirmReplace=confirm(
+            "A(z) "+DataV.ramp+" rámpa jelenleg foglalt ("+ExistingV.truck+"). Lecseréled az újra?"
+        );
+
+        if(!confirmReplace)return;
+
+        var HistoryV=GetHistory();
+
+        ExistingV.leftTime=new Date().toLocaleTimeString("hu-HU",{
+            hour:"2-digit",
+            minute:"2-digit"
+        });
+
+        HistoryV.unshift(ExistingV);
+        SaveHistory(HistoryV);
+
+        AssignmentsV=AssignmentsV.filter(function(item){
+            return item.ramp!==DataV.ramp;
+        });
+    }
+
+    var NewAssignmentV={
+        ramp:DataV.ramp,
+        truck:DataV.truck,
+        routeType:DataV.routeType,
+        plate:DataV.plate,
+        slot:DataV.slot,
+        operation:DataV.operation,
+        comment:DataV.comment,
+        time:new Date().toLocaleTimeString("hu-HU",{
+            hour:"2-digit",
+            minute:"2-digit"
+        })
+    };
+
+    AssignmentsV.push(NewAssignmentV);
+    SaveAssignments(AssignmentsV);
+    SetRampDisplayMode(true);
+    CloseAssignmentModal();
+    RenderRamps();
+}
+
+
+
+/* ============================================================
+   MOVE
+   - A hozzárendelés minden adata átkerül a célrámpára.
+   - A forrásrámpa Location adatai is átkerülnek.
+   - A forrásrámpa teljesen kiürül és Off állapotba kerül.
+   - A célrámpa korábbi hozzárendelése bekerül az előzményekbe.
+   ============================================================ */
+
+function MoveRampFromModal(){
+
+    var DataV=GetModalAssignmentData();
+    if(!DataV)return;
+
+    var MoveRampSelectV=document.getElementById("modalMoveRampSelect");
+    var TargetRampV=MoveRampSelectV.value.trim();
+
+    if(TargetRampV===""){
+        ShowAssignmentMessage("A Move cél rámpa kiválasztása kötelező!");
+        MoveRampSelectV.focus();
+        return;
+    }
+
+    if(TargetRampV===DataV.ramp){
+        ShowAssignmentMessage("A cél rámpa nem lehet ugyanaz, mint a kiinduló rámpa!");
+        MoveRampSelectV.focus();
+        return;
+    }
+
+    var AssignmentsV=GetAssignments();
+
+    var SourceAssignmentV=AssignmentsV.find(function(ItemV){
+        return ItemV.ramp===DataV.ramp;
+    });
+
+    if(!SourceAssignmentV){
+        ShowAssignmentMessage("A kiinduló rámpán nincs aktív hozzárendelés!");
+        return;
+    }
+
+    var TargetAssignmentV=AssignmentsV.find(function(ItemV){
+        return ItemV.ramp===TargetRampV;
+    });
+
+    if(TargetAssignmentV){
+
+        var ConfirmMoveReplaceV=confirm(
+            "A(z) "+TargetRampV+" rámpa jelenleg foglalt ("+
+            TargetAssignmentV.truck+").\n\n"+
+            "Biztosan áthelyezed ide a(z) "+DataV.truck+" kamiont?"
+        );
+
+        if(!ConfirmMoveReplaceV)return;
+
+        var HistoryV=GetHistory();
+
+        TargetAssignmentV.leftTime=new Date().toLocaleTimeString("hu-HU",{
+            hour:"2-digit",
+            minute:"2-digit"
+        });
+
+        HistoryV.unshift(TargetAssignmentV);
+        SaveHistory(HistoryV);
+
+        AssignmentsV=AssignmentsV.filter(function(ItemV){
+            return ItemV.ramp!==TargetRampV;
+        });
+    }
+
+    /* Forrásrámpa Location adatainak elmentése mozgatás előtt. */
+    var LocationsV=GetLocations();
+
+    var SourceLocationV=LocationsV[DataV.ramp];
+
+    if(!SourceLocationV||typeof SourceLocationV!=="object"){
+        SourceLocationV={
+            location:"",
+            routeType:"",
+            comment:"",
+            active:"On"
+        };
+    }
+
+    /* A hozzárendelés áthelyezése. */
+    AssignmentsV=AssignmentsV.filter(function(ItemV){
+        return ItemV.ramp!==DataV.ramp;
+    });
+
+    var MovedAssignmentV={
+        ramp:TargetRampV,
+        truck:DataV.truck,
+        routeType:DataV.routeType,
+        plate:DataV.plate,
+        slot:DataV.slot,
+        operation:DataV.operation,
+        comment:DataV.comment,
+        time:SourceAssignmentV.time||new Date().toLocaleTimeString("hu-HU",{
+            hour:"2-digit",
+            minute:"2-digit"
+        })
+    };
+
+    AssignmentsV.push(MovedAssignmentV);
+
+    /* A forrás Location adatok átkerülnek a célrámpára. */
+    var TargetLocationV=LocationsV[TargetRampV];
+
+    if(!TargetLocationV||typeof TargetLocationV!=="object"){
+        TargetLocationV={
+            location:"",
+            routeType:"",
+            comment:"",
+            active:"Off"
+        };
+    }
+
+    LocationsV[TargetRampV]={
+        location:SourceLocationV.location||"",
+        routeType:DataV.routeType||SourceLocationV.routeType||"",
+        comment:DataV.comment||SourceLocationV.comment||"",
+        active:"On"
+    };
+
+    /* A forrásrámpa összes Location adata törlődik. */
+    LocationsV[DataV.ramp]={
+        location:"",
+        routeType:"",
+        comment:"",
+        active:"Off"
+    };
+
+    /* Adatok mentése és felület frissítése. */
+    SaveLocationsMap(LocationsV);
+    SaveAssignments(AssignmentsV);
+
+    SetRampDisplayMode(true);
+    CreateRampOptions();
+    RenderRamps();
+
+    WriteLog("MoveRamp("+DataV.ramp+" -> "+TargetRampV+")");
+
+    CloseAssignmentModal();
+}
+
+
+
+// ============================================================
+// Kamion-hozzárendelés törlése
+// - Törli a rámpához tartozó kamion-hozzárendelést
+// - Kiüríti a tárhely mezőt
+// - Inaktívra állítja a rámpát
+// - Frissíti a táblázatot, így a piros X is eltűnik
+// ============================================================
+
+function DeleteAssignment(RampV) {
+
+    var rampKey = String(RampV || "").trim().toUpperCase();
+
+    if (!rampKey) {
+        return;
+    }
+
+    // --------------------------------------------------------
+    // 1. Kamion-hozzárendelés törlése
+    // --------------------------------------------------------
+
+    var assignments = GetAssignments();
+
+    var filteredAssignments = assignments.filter(function (item) {
+
+        var assignedRamp = String(
+            item.ramp || item.rampName || ""
+        ).trim().toUpperCase();
+
+        return assignedRamp !== rampKey;
+
+    });
+
+    SaveAssignments(filteredAssignments);
+
+    // --------------------------------------------------------
+    // 2. Tárhely kiürítése és rámpa kikapcsolása
+    // --------------------------------------------------------
+
+    var locations = GetLocations();
+
+    Object.keys(locations).forEach(function (key) {
+
+        if (String(key).trim().toUpperCase() === rampKey) {
+
+            var item = locations[key];
+
+            if (!item || typeof item !== "object") {
+                item = {
+                    location: "",
+                    routeType: "",
+                    comment: "",
+                    active: "Off"
+                };
+            }
+
+            item.location = "";
+            item.active = "Off";
+
+            locations[key] = item;
+        }
+
+    });
+
+    SaveLocationsMap(locations);
+
+    // --------------------------------------------------------
+    // 3. Táblázatok frissítése
+    // --------------------------------------------------------
+
+    CreateRampOptions();
+    RenderRamps();
+
+    WriteLog("DeleteAssignment: " + RampV);
+	
+	//RenderLogs();
+}
+
+
+
+/* ============================================================
+   PIROS X – TELJES RÁMPASOR RESET
+   - Kamion-hozzárendelés törlése
+   - Tárhely, RouteType és Comment ürítése
+   - Rámpa Off állapotba állítása
+   ============================================================ */
+
+function DeleteModalAssignment(RampV){
+
+    var RampKeyV=String(RampV||"").trim().toUpperCase();
+
+    if(!RampKeyV)return;
+
+    var AssignmentsV=GetAssignments();
+
+    var FilteredAssignmentsV=AssignmentsV.filter(function(ItemV){
+        return String(ItemV.ramp||"").trim().toUpperCase()!==RampKeyV;
+    });
+
+    var LocationsV=GetLocations();
+    var FoundRampV=false;
+
+    Object.keys(LocationsV).forEach(function(KeyV){
+
+        if(String(KeyV).trim().toUpperCase()!==RampKeyV)return;
+
+        FoundRampV=true;
+
+        LocationsV[KeyV]={
+            location:"",
+            routeType:"",
+            comment:"",
+            active:"Off"
+        };
+    });
+
+    SaveAssignments(FilteredAssignmentsV);
+
+    if(FoundRampV){
+        SaveLocationsMap(LocationsV);
+    }
+
+    CreateRampOptions();
+    RenderRamps();
+
+    WriteLog("DeleteRampReset: "+RampKeyV);
+}
+
+
+
+
+
+
+/* ============================================================
+   LOCATION INFO
+   ============================================================ */
 
 function GetLocationInfo(RampV){
-var locations=GetLocations();
-var locationData=locations[RampV];
-var loc="-";
-var defaultRouteType="";
+    var locationData=GetLocations()[RampV];
+    var loc="-";
+    var defaultRouteType="";
+    var defaultComment="-";
 
-if(locationData&&typeof locationData==="object"){
-loc=locationData.location||"-";
-defaultRouteType=locationData.routeType||"";
-}else if(typeof locationData==="string"){
-loc=locationData;
+    if(locationData&&typeof locationData==="object"){
+        loc=locationData.location||"-";
+        defaultRouteType=locationData.routeType||"";
+        defaultComment=locationData.comment||"-";
+    }else if(typeof locationData==="string"){
+        loc=locationData;
+    }
+
+    return {
+        location:loc,
+        routeType:defaultRouteType,
+        comment:defaultComment
+    };
 }
-return {location:loc,routeType:defaultRouteType};
+
+
+
+/* ============================================================
+   RAMP SOR KATTINTÁS ÉS TÖRLŐGOMB
+   A piros X csak a kamion-hozzárendelést törli.
+   ============================================================ */
+
+function SetupRampRowEvents(RowV, RampV) {
+
+    RowV.addEventListener("click", function (EventV) {
+
+        if (EventV.target.closest("[data-delete-ramp]")) {
+            return;
+        }
+
+        OpenAssignmentModal(RampV);
+    });
+
+    var DeleteBtnV = RowV.querySelector("[data-delete-ramp]");
+
+    if (DeleteBtnV) {
+
+        DeleteBtnV.addEventListener("click", function (EventV) {
+
+            EventV.preventDefault();
+            EventV.stopPropagation();
+
+            DeleteModalAssignment(RampV);
+        });
+    }
 }
+
+
+/* ============================================================
+   X RAMP RENDER
+   ============================================================ */
 
 function RenderXRamps(){
-var xTable=document.getElementById("xRampTable");
-if(!xTable)return;
-xTable.innerHTML="";
+    var xTable=document.getElementById("xRampTable");
+    if(!xTable)return;
 
-var assignments=GetAssignments();
-var xRamps=GetXRamps();
+    xTable.innerHTML="";
 
-xRamps.forEach(function(rName){
-var assignment=assignments.find(function(a){return a.ramp===rName});
-var info=GetLocationInfo(rName);
-var loc=info.location;
-var defaultRouteType=info.routeType;
-var tr=document.createElement("tr");
+    var assignments=GetAssignments();
 
-if(assignment){
-var routeType=assignment.routeType||defaultRouteType||"-";
-tr.className="occupied "+GetRouteTypeClass(routeType);
-tr.innerHTML=
-"<td>"+rName+"</td>"+
-"<td>"+loc+"</td>"+
-"<td>"+assignment.truck+"</td>"+
-"<td>"+routeType+"</td>"+
-"<td>"+(assignment.plate||"-")+"</td>"+
-"<td>"+(assignment.slot||"-")+"</td>"+
-"<td>"+assignment.operation+"</td>"+
-"<td>"+assignment.time+"</td>"+
-"<td><button type=\"button\" class=\"delete-btn\" onclick=\"DeleteAssignment('"+rName+"')\">X</button></td>";
-}else{
-tr.className="free "+GetRouteTypeClass(defaultRouteType);
-tr.innerHTML=
-"<td>"+rName+"</td>"+
-"<td>"+loc+"</td>"+
-"<td>Szabad</td>"+
-"<td>"+(defaultRouteType||"-")+"</td>"+
-"<td>-</td>"+
-"<td>-</td>"+
-"<td>-</td>"+
-"<td>-</td>"+
-"<td></td>";
+    GetXRamps().forEach(function(rName){
+        var assignment=showAssignmentsOnRamps?assignments.find(function(a){
+            return a.ramp===rName;
+        }):null;
+
+        var info=GetLocationInfo(rName);
+        var loc=info.location;
+        var defaultRouteType=info.routeType;
+        var tr=document.createElement("tr");
+
+        tr.className="ramp-clickable ";
+
+        if(assignment){
+            var routeType=assignment.routeType||defaultRouteType||"-";
+
+            tr.className+="occupied "+GetRouteTypeClass(routeType);
+
+            tr.innerHTML=
+                "<td>"+rName+"</td>"+
+                "<td>"+loc+"</td>"+
+                "<td>"+assignment.truck+"</td>"+
+                "<td>"+routeType+"</td>"+
+                "<td>"+(assignment.plate||"-")+"</td>"+
+                "<td>"+(assignment.slot||"-")+"</td>"+
+                "<td>"+assignment.operation+"</td>"+
+                "<td>"+assignment.time+"</td>"+
+                "<td>"+(assignment.comment||info.comment||"-")+"</td>"+
+                "<td>"+GetDeleteButtonHtml(rName)+"</td>";
+        }else{
+            tr.className+="free "+GetRouteTypeClass(defaultRouteType);
+
+            tr.innerHTML=
+                "<td>"+rName+"</td>"+
+                "<td>"+loc+"</td>"+
+                "<td>Szabad</td>"+
+                "<td>"+(defaultRouteType||"-")+"</td>"+
+                "<td>-</td>"+
+                "<td>-</td>"+
+                "<td>-</td>"+
+                "<td>-</td>"+
+                "<td>"+(info.comment||"-")+"</td>"+
+                "<td>"+GetDeleteButtonHtml(rName)+"</td>";
+        }
+
+        SetupRampRowEvents(tr,rName);
+        xTable.appendChild(tr);
+    });
 }
-xTable.appendChild(tr);
-});
-}
+
+
+/* ============================================================
+   D RAMP RENDER
+   ============================================================ */
 
 function RenderDRamps(){
-var dTable=document.getElementById("dRampTable");
-if(!dTable)return;
-dTable.innerHTML="";
+    var dTable=document.getElementById("dRampTable");
+    if(!dTable)return;
 
-var assignments=GetAssignments();
+    dTable.innerHTML="";
 
-GetDRamps().forEach(function(dName){
-var assignmentD=assignments.find(function(a){return a.ramp===dName});
-var info=GetLocationInfo(dName);
-var locD=info.location;
-var defaultRouteTypeD=info.routeType;
-var trD=document.createElement("tr");
+    var assignments=GetAssignments();
 
-if(assignmentD){
-var routeTypeD=assignmentD.routeType||defaultRouteTypeD||"-";
-trD.className="occupied "+GetRouteTypeClass(routeTypeD);
-trD.innerHTML=
-"<td>"+dName+"</td>"+
-"<td>"+locD+"</td>"+
-"<td>"+assignmentD.truck+"</td>"+
-"<td>"+routeTypeD+"</td>"+
-"<td>"+(assignmentD.plate||"-")+"</td>"+
-"<td>"+(assignmentD.slot||"-")+"</td>"+
-"<td>"+assignmentD.operation+"</td>"+
-"<td>"+assignmentD.time+"</td>"+
-"<td><button type=\"button\" class=\"delete-btn\" onclick=\"DeleteAssignment('"+dName+"')\">X</button></td>";
-}else{
-trD.className="free "+GetRouteTypeClass(defaultRouteTypeD);
-trD.innerHTML=
-"<td>"+dName+"</td>"+
-"<td>"+locD+"</td>"+
-"<td>Szabad</td>"+
-"<td>"+(defaultRouteTypeD||"-")+"</td>"+
-"<td>-</td>"+
-"<td>-</td>"+
-"<td>-</td>"+
-"<td>-</td>"+
-"<td></td>";
+    GetDRamps().forEach(function(dName){
+        var assignmentD=showAssignmentsOnRamps?assignments.find(function(a){
+            return a.ramp===dName;
+        }):null;
+
+        var info=GetLocationInfo(dName);
+        var locD=info.location;
+        var defaultRouteTypeD=info.routeType;
+        var trD=document.createElement("tr");
+
+        trD.className="ramp-clickable ";
+
+        if(assignmentD){
+            var routeTypeD=assignmentD.routeType||defaultRouteTypeD||"-";
+
+            trD.className+="occupied "+GetRouteTypeClass(routeTypeD);
+
+            trD.innerHTML=
+                "<td>"+dName+"</td>"+
+                "<td>"+locD+"</td>"+
+                "<td>"+assignmentD.truck+"</td>"+
+                "<td>"+routeTypeD+"</td>"+
+                "<td>"+(assignmentD.plate||"-")+"</td>"+
+                "<td>"+(assignmentD.slot||"-")+"</td>"+
+                "<td>"+assignmentD.operation+"</td>"+
+                "<td>"+assignmentD.time+"</td>"+
+                "<td>"+(assignmentD.comment||info.comment||"-")+"</td>"+
+                "<td>"+GetDeleteButtonHtml(dName)+"</td>";
+        }else{
+            trD.className+="free "+GetRouteTypeClass(defaultRouteTypeD);
+
+            trD.innerHTML=
+                "<td>"+dName+"</td>"+
+                "<td>"+locD+"</td>"+
+                "<td>Szabad</td>"+
+                "<td>"+(defaultRouteTypeD||"-")+"</td>"+
+                "<td>-</td>"+
+                "<td>-</td>"+
+                "<td>-</td>"+
+                "<td>-</td>"+
+                "<td>"+(info.comment||"-")+"</td>"+
+                "<td>"+GetDeleteButtonHtml(dName)+"</td>";
+        }
+
+        SetupRampRowEvents(trD,dName);
+        dTable.appendChild(trD);
+    });
 }
-dTable.appendChild(trD);
-});
-}
+
+
+/* ============================================================
+   RENDER RAMPS
+   ============================================================ */
 
 function RenderRamps(){
-RenderXRamps();
-RenderDRamps();
+    RenderXRamps();
+    RenderDRamps();
 }
+
+
+/* ============================================================
+   HISTORY TABLE / TRUCKLIST
+   ============================================================ */
 
 function RenderHistoryTable(){
-var historyTableBody=document.getElementById("historyTableBody");
-if(!historyTableBody)return;
-historyTableBody.innerHTML="";
+    var historyTableBody=document.getElementById("historyTableBody");
+    if(!historyTableBody)return;
 
-var history=GetHistory();
+    historyTableBody.innerHTML="";
 
-history.forEach(function(item){
-var info=GetLocationInfo(item.ramp);
-var routeType=item.routeType||info.routeType||"-";
-var tr=document.createElement("tr");
+    GetHistory().forEach(function(item){
+        var info=GetLocationInfo(item.ramp);
+        var routeType=item.routeType||info.routeType||"-";
+        var tr=document.createElement("tr");
 
-tr.className=GetRouteTypeClass(routeType);
-tr.innerHTML=
-"<td>"+item.ramp+"</td>"+
-"<td>"+info.location+"</td>"+
-"<td>"+item.truck+"</td>"+
-"<td>"+routeType+"</td>"+
-"<td>"+(item.plate||"-")+"</td>"+
-"<td>"+(item.slot||"-")+"</td>"+
-"<td>"+item.operation+"</td>"+
-"<td>"+(item.time||"-")+"</td>"+
-"<td>"+(item.leftTime||"-")+"</td>";
+        tr.className=GetRouteTypeClass(routeType);
 
-historyTableBody.appendChild(tr);
-});
+        tr.innerHTML=
+            "<td>"+item.ramp+"</td>"+
+            "<td>"+info.location+"</td>"+
+            "<td>"+item.truck+"</td>"+
+            "<td>"+routeType+"</td>"+
+            "<td>"+(item.plate||"-")+"</td>"+
+            "<td>"+(item.slot||"-")+"</td>"+
+            "<td>"+item.operation+"</td>"+
+            "<td>"+(item.comment||"-")+"</td>"+
+            "<td>"+(item.time||"-")+"</td>"+
+            "<td>"+(item.leftTime||"-")+"</td>";
+
+        historyTableBody.appendChild(tr);
+    });
 }
+
 
 function SetupModals(){
-var settingsModal=document.getElementById("settingsModal");
+    var settingsModal=document.getElementById("settingsModal");
 
-document.getElementById("openSettingsBtn").onclick=function(){
-if(!CheckPassword())return;
+    document.getElementById("openSettingsBtn").onclick=function(){
+        if(!CheckPassword())return;
 
-var locs=GetLocations();
-var text="";
+        var locations=GetLocations();
+        var assignments=GetAssignments();
 
-for(var key in locs){
-var locationData=locs[key];
-if(locationData&&typeof locationData==="object"){
-text+=key+"; "+(locationData.location||"")+"; "+(locationData.routeType||"")+"\n";
-}else{
-text+=key+"; "+locationData+"\n";
-}
-}
+        var text="Rámpa;Tárhely;Kamion / útvonal;RouteType;Rendszám;Időkapu;Művelet;Idő;Comment;Active/Inactive\n";
 
-document.getElementById("locationsTextarea").value=text;
-settingsModal.style.display="flex";
-};
+        Object.keys(locations).forEach(function(rampName){
+            var item=locations[rampName]||{};
 
-document.getElementById("closeSettingsBtn").onclick=function(){
-settingsModal.style.display="none";
-};
+            if(typeof item!=="object"){
+                item={
+                    location:String(item),
+                    routeType:"",
+                    comment:"",
+                    active:"On"
+                };
+            }
+
+            var normalizedRamp=String(rampName).trim().toUpperCase();
+
+            var assignment=assignments.find(function(a){
+                return String(a.ramp||"").trim().toUpperCase()===normalizedRamp;
+            });
+
+            var activeValue=
+                String(item.active||"On").trim().toUpperCase()==="OFF"
+                ? "Off"
+                : "On";
+
+            text+=[
+                rampName,
+                item.location||"",
+                assignment ? assignment.truck||"" : "",
+                assignment ? assignment.routeType||item.routeType||"" : item.routeType||"",
+                assignment ? assignment.plate||"" : "",
+                assignment ? assignment.slot||"" : "",
+                assignment ? assignment.operation||"" : "",
+                assignment ? assignment.time||"" : "",
+                assignment ? assignment.comment||item.comment||"" : item.comment||"",
+                activeValue
+            ].join(";")+"\n";
+        });
+
+        document.getElementById("locationsTextarea").value=text;
+        settingsModal.style.display="flex";
+    };
+
+    document.getElementById("closeSettingsBtn").onclick=function(){
+        settingsModal.style.display="none";
+    };
+
+
+
+/* ========================================================
+   LOCATION SETTINGS MENTÉS
+   - Off rámpánál minden adat törlődik.
+   - On rámpánál csak az On sorban megadott hozzárendelés marad.
+   - A listában nem szereplő rámpák adatai nem változnak.
+   ======================================================== */
 
 document.getElementById("saveLocationsBtn").onclick=function(){
-var text=document.getElementById("locationsTextarea").value;
-var lines=text.split(/\r?\n/);
-var newLocs={};
 
-lines.forEach(function(line){
-line=line.trim();
-if(!line)return;
-var parts=line.split(";");
-if(parts.length>=2){
-var ramp=parts[0].trim().toUpperCase();
-var loc=parts[1].trim();
-var routeType=parts.length>=3?parts.slice(2).join(";").trim():"";
-newLocs[ramp]={location:loc,routeType:routeType};
+    var text=document.getElementById("locationsTextarea").value;
+    var lines=text.split(/\r?\n/);
+
+    var newLocs={};
+    var seenRamps={};
+    var importedRows=[];
+    var firstDataLine=true;
+    var errorMessage="";
+
+    for(var i=0;i<lines.length;i++){
+
+        var line=lines[i].trim();
+
+        if(!line)continue;
+
+        if(firstDataLine){
+            firstDataLine=false;
+            continue;
+        }
+
+        var parts=line.split(";").map(function(part){
+            return part.trim();
+        });
+
+        if(parts.length<10){
+            errorMessage="A(z) "+(i+1)+". sorban nincs meg mind a 10 oszlop.";
+            break;
+        }
+
+        var ramp=parts[0].toUpperCase();
+        var activeValue=parts[9].toUpperCase();
+
+        if(!ramp||(!ramp.startsWith("X")&&!ramp.startsWith("D"))){
+            errorMessage="Hibás rámpanév a(z) "+(i+1)+". sorban: "+parts[0];
+            break;
+        }
+
+        if(seenRamps[ramp]){
+            errorMessage="Duplikált rámpa a listában: "+ramp;
+            break;
+        }
+
+        if(activeValue!=="ON"&&activeValue!=="OFF"){
+            errorMessage="A(z) "+(i+1)+". sor Active/Inactive értéke csak On vagy Off lehet.";
+            break;
+        }
+
+        seenRamps[ramp]=true;
+
+        /* Off esetén minden mező üresre áll. */
+        if(activeValue==="OFF"){
+
+            newLocs[ramp]={
+                location:"",
+                routeType:"",
+                comment:"",
+                active:"Off"
+            };
+
+            importedRows.push({
+                ramp:ramp,
+                active:"OFF",
+                truck:""
+            });
+
+        }else{
+
+            newLocs[ramp]={
+                location:parts[1],
+                routeType:parts[3],
+                comment:parts[8],
+                active:"On"
+            };
+
+            importedRows.push({
+                ramp:ramp,
+                truck:parts[2],
+                routeType:parts[3],
+                plate:parts[4],
+                slot:parts[5],
+                operation:parts[6],
+                time:parts[7],
+                comment:parts[8],
+                active:"ON"
+            });
+        }
+    }
+
+    if(firstDataLine){
+        alert("A lista üres. Illeszd be a fejlécet és a rámpaadatokat.");
+        return;
+    }
+
+    if(errorMessage){
+        alert(errorMessage+"\n\nA mentés nem történt meg.");
+        return;
+    }
+
+    if(Object.keys(newLocs).length===0){
+        alert("Nem található menthető rámpaadat.");
+        return;
+    }
+
+    /*
+     * A beillesztett rámpák korábbi hozzárendeléseit töröljük.
+     * A listában nem szereplő rámpák hozzárendelései megmaradnak.
+     */
+    var existingAssignments=GetAssignments();
+
+    var newAssignments=existingAssignments.filter(function(a){
+        var normalizedRamp=String(a.ramp||"").trim().toUpperCase();
+        return !seenRamps[normalizedRamp];
+    });
+
+    /*
+     * Csak az On státuszú, kamionnal rendelkező sorokból
+     * készül hozzárendelés.
+     */
+    importedRows.forEach(function(row){
+
+        if(row.active!=="ON"||!row.truck)return;
+
+        newAssignments.push({
+            ramp:row.ramp,
+            truck:row.truck,
+            routeType:row.routeType,
+            plate:row.plate,
+            slot:row.slot,
+            operation:row.operation,
+            time:row.time,
+            comment:row.comment
+        });
+    });
+
+    SaveLocationsMap(newLocs);
+    SaveAssignments(newAssignments);
+
+    SetRampDisplayMode(true);
+    CreateRampOptions();
+    RenderRamps();
+
+    settingsModal.style.display="none";
+
+    WriteLog("SaveRampLocations("+Object.keys(newLocs).length+")");
+};
+
+
+
+
+    /* ========================================================
+       STARTUP
+       Üres alaplista, minden rámpa Off állapotban.
+       A régi assignments/history/log nem törlődik.
+       ======================================================== */
+
+    document.getElementById("startupLocationsBtn").onclick=function(){
+        if(!confirm(
+            "A StartUp visszaállítja az eredeti teljes rámpalistát üres adatokkal. "+
+            "Minden rámpa Off állapotba kerül, ezért piros X nem jelenik meg. "+
+            "A korábbi kamion-hozzárendelések, előzmények és naplók nem törlődnek. Folytatod?"
+        )){
+            return;
+        }
+
+        SaveLocationsMap(CreateStartupLocations());
+        SetRampDisplayMode(false);
+        CreateRampOptions();
+        RenderRamps();
+
+        settingsModal.style.display="none";
+
+        WriteLog("StartUp(OriginalRampListEmpty)");
+    };
+
+
+    /* ========================================================
+       HISTORY / TRUCKLIST
+       ======================================================== */
+
+    var historyModal=document.getElementById("historyModal");
+
+    document.getElementById("openHistoryBtn").onclick=function(){
+        RenderHistoryTable();
+        historyModal.style.display="flex";
+    };
+
+    document.getElementById("closeHistoryBtn").onclick=function(){
+        historyModal.style.display="none";
+    };
+
+    document.getElementById("clearHistoryBtn").onclick=function(){
+        if(!CheckPassword())return;
+
+        if(confirm("Biztosan üríted az előzményeket?")){
+            SaveHistory([]);
+            document.getElementById("historyTableBody").innerHTML="";
+        }
+    };
+
+
+    /* ========================================================
+       LOG
+       ======================================================== */
+
+    var logModal=document.getElementById("logModal");
+
+    document.getElementById("openLogBtn").onclick=function(){
+        if(!CheckPassword())return;
+
+        var logTableBody=document.getElementById("logTableBody");
+        logTableBody.innerHTML="";
+
+        cachedLogs.forEach(function(log){
+            var tr=document.createElement("tr");
+
+            tr.innerHTML=
+                "<td>"+log.rowId+"</td>"+
+                "<td>"+log.userName+"</td>"+
+                "<td>"+log.dateTime+"</td>"+
+                "<td>"+log.event+"</td>";
+
+            logTableBody.appendChild(tr);
+        });
+
+        logModal.style.display="flex";
+    };
+
+    document.getElementById("closeLogBtn").onclick=function(){
+        logModal.style.display="none";
+    };
+
+    document.getElementById("clearLogBtn").onclick=function(){
+        if(!CheckPassword())return;
+
+        if(confirm("Biztosan törlöd a naplót?")){
+            cachedLogs=[];
+            db.ref("logs").set([]);
+            document.getElementById("logTableBody").innerHTML="";
+        }
+    };
+
+    document.getElementById("downloadLogBtn").onclick=function(){
+        var content="";
+
+        cachedLogs.forEach(function(l){
+            content+=l.rowId+" | "+l.userName+" | "+l.dateTime+" | "+l.event+"\n";
+        });
+
+        var blob=new Blob([content],{type:"text/plain;charset=utf-8"});
+        var url=URL.createObjectURL(blob);
+        var a=document.createElement("a");
+
+        a.href=url;
+        a.download="_Log.txt";
+        a.click();
+
+        URL.revokeObjectURL(url);
+    };
+
+
+    /* ========================================================
+       LAYOUT
+       ======================================================== */
+
+    var layoutModal=document.getElementById("layoutModal");
+
+    document.getElementById("openLayoutBtn").onclick=function(){
+        layoutModal.style.display="flex";
+    };
+
+    document.getElementById("closeLayoutBtn").onclick=function(){
+        layoutModal.style.display="none";
+    };
+
+
+    /* ========================================================
+       ANDROID
+       ======================================================== */
+
+    var androidModal=document.getElementById("androidModal");
+
+    document.getElementById("openAndroidModalBtn").onclick=function(){
+        androidModal.style.display="flex";
+    };
+
+    document.getElementById("closeAndroidModalBtn").onclick=function(){
+        androidModal.style.display="none";
+    };
+
+    /* ========================================================
+       CLEAR ALL
+       ======================================================== */
+
+    document.getElementById("clearAllDataBtn").onclick=function(){
+        if(!CheckPassword())return;
+
+        if(confirm("FIGYELEM! Minden aktív hozzárendelés törlődik. Biztosan folytatod?")){
+            SaveAssignments([]);
+            SetRampDisplayMode(false);
+            SaveLocationsMap(CreateStartupLocations());
+            CreateRampOptions();
+            RenderRamps();
+            WriteLog("ClearAllData");
+
+            // A törlés után újra felépítjük az alap rámpalistát.
+            document.getElementById("locationsTextarea").value="";
+        }
+    };
+
+
+    /* ========================================================
+       ÚJ BEVITELI ABLAK
+       ======================================================== */
+
+    document.getElementById("closeAssignmentBtn").onclick=function(){
+        CloseAssignmentModal();
+    };
+
+    document.getElementById("cancelAssignmentBtn").onclick=function(){
+        CloseAssignmentModal();
+    };
+
+    document.getElementById("modalAssignBtn").onclick=function(){
+        AssignRampFromModal();
+    };
+
+    document.getElementById("modalMoveBtn").onclick=function(){
+        MoveRampFromModal();
+    };
+
+    /*
+     * Nincs backdrop click bezárás.
+     * Csak az X vagy a Mégse gomb zárja be a beviteli ablakot.
+     */
 }
-});
 
-SaveLocationsMap(newLocs);
-CreateRampOptions();
-RenderRamps();
-settingsModal.style.display="none";
-ShowMessage("xMessage","Tárhelyek és RouteType-ok sikeresen mentve.");
-};
-
-var historyModal=document.getElementById("historyModal");
-
-document.getElementById("openHistoryBtn").onclick=function(){
-RenderHistoryTable();
-historyModal.style.display="flex";
-};
-
-document.getElementById("closeHistoryBtn").onclick=function(){
-historyModal.style.display="none";
-};
-
-document.getElementById("clearHistoryBtn").onclick=function(){
-if(!CheckPassword())return;
-if(confirm("Biztosan üríted az előzményeket?")){
-SaveHistory([]);
-document.getElementById("historyTableBody").innerHTML="";
-}
-};
-
-var logModal=document.getElementById("logModal");
-
-document.getElementById("openLogBtn").onclick=function(){
-if(!CheckPassword())return;
-
-var logTableBody=document.getElementById("logTableBody");
-logTableBody.innerHTML="";
-
-cachedLogs.forEach(function(log){
-var tr=document.createElement("tr");
-tr.innerHTML=
-"<td>"+log.rowId+"</td>"+
-"<td>"+log.userName+"</td>"+
-"<td>"+log.dateTime+"</td>"+
-"<td>"+log.event+"</td>";
-logTableBody.appendChild(tr);
-});
-
-logModal.style.display="flex";
-};
-
-document.getElementById("closeLogBtn").onclick=function(){
-logModal.style.display="none";
-};
-
-document.getElementById("clearLogBtn").onclick=function(){
-if(!CheckPassword())return;
-if(confirm("Biztosan törlöd a naplót?")){
-cachedLogs=[];
-db.ref("logs").set([]);
-document.getElementById("logTableBody").innerHTML="";
-}
-};
-
-document.getElementById("downloadLogBtn").onclick=function(){
-var content="";
-cachedLogs.forEach(function(l){
-content+=l.rowId+" | "+l.userName+" | "+l.dateTime+" | "+l.event+"\n";
-});
-
-var blob=new Blob([content],{type:"text/plain;charset=utf-8"});
-var url=URL.createObjectURL(blob);
-var a=document.createElement("a");
-a.href=url;
-a.download="_Log.txt";
-a.click();
-URL.revokeObjectURL(url);
-};
-
-var layoutModal=document.getElementById("layoutModal");
-
-document.getElementById("openLayoutBtn").onclick=function(){
-layoutModal.style.display="flex";
-};
-
-document.getElementById("closeLayoutBtn").onclick=function(){
-layoutModal.style.display="none";
-};
-
-var androidModal=document.getElementById("androidModal");
-
-document.getElementById("openAndroidModalBtn").onclick=function(){
-androidModal.style.display="flex";
-};
-
-document.getElementById("closeAndroidModalBtn").onclick=function(){
-androidModal.style.display="none";
-};
-
-document.getElementById("clearAllDataBtn").onclick=function(){
-if(!CheckPassword())return;
-if(confirm("FIGYELEM! Minden aktív hozzárendelés törlődik. Biztosan folytatod?")){
-SaveAssignments([]);
-RenderRamps();
-WriteLog("ClearAllData");
-}
-};
-}
+/* ============================================================
+   INDULÁS
+   ============================================================ */
 
 window.onload=function(){
-/* HTML-ben lévő fix konfiguráció beolvasása */
-cachedDefaultLocations=LoadDefaultLocationsMap();
+    SetupModalRampRouteType();
+    SetupModals();
 
-/* Firebase locations beolvasása */
-db.ref("locations").once("value",function(snapshot){
-if(snapshot.exists()&&snapshot.val()){
-cachedLocations=snapshot.val();
-}else{
-cachedLocations={};
-}
+    /*
+     * Először betöltjük a rámpalistát.
+     * Ha nincs még lista a Firebase-ben, létrehozzuk az alaplistát
+     * üres adatokkal és Off állapotban.
+     */
+    db.ref("locations").once("value",function(snapshot){
+        var locations=snapshot.val();
 
-/* A fix HTML lista mindig ráül a Firebase adatokra */
-CreateRampOptions();
-SetupModals();
+        if(!locations||Object.keys(locations).length===0){
+            locations=CreateStartupLocations();
+            SaveLocationsMap(locations);
+        }else{
+            cachedLocations=locations;
+        }
 
-SetupRampRouteType("xRampSelect","xRouteTypeSelect");
-SetupRampRouteType("dRampSelect","dRouteTypeSelect");
+        /*
+         * Induláskor a rámpák üresek legyenek.
+         * Az assignments adatok megmaradnak, csak nem jelennek meg.
+         */
+        showAssignmentsOnRamps=false;
+        db.ref("settings/showAssignmentsOnRamps").set(false);
 
-document.getElementById("xAssignBtn").onclick=function(){
-AssignRamp("X");
+        CreateRampOptions();
+        RenderRamps();
+    });
+
+
+    /* ========================================================
+       ASSIGNMENTS REALTIME
+       ======================================================== */
+
+    db.ref("assignments").on("value",function(snapshot){
+        cachedAssignments=snapshot.val()||[];
+        RenderRamps();
+    });
+
+
+    /* ========================================================
+       HISTORY REALTIME
+       ======================================================== */
+
+    db.ref("history").on("value",function(snapshot){
+        cachedHistory=snapshot.val()||[];
+
+        var historyModal=document.getElementById("historyModal");
+
+        if(historyModal&&historyModal.style.display==="flex"){
+            RenderHistoryTable();
+        }
+    });
+
+
+    /* ========================================================
+       LOG REALTIME
+       ======================================================== */
+
+    db.ref("logs").on("value",function(snapshot){
+        cachedLogs=snapshot.val()||[];
+    });
+
+
+    /* ========================================================
+       SHARED RAMP DISPLAY MODE
+       ======================================================== */
+
+    db.ref("settings/showAssignmentsOnRamps").on("value",function(snapshot){
+        var value=snapshot.val();
+
+        showAssignmentsOnRamps=(value===null)?false:value!==false;
+
+        RenderRamps();
+    });
+
+
+    /* ========================================================
+       LOCATIONS REALTIME
+       ======================================================== */
+
+    db.ref("locations").on("value",function(snapshot){
+        cachedLocations=snapshot.val()||{};
+
+        CreateRampOptions();
+        RenderRamps();
+    });
+
+
+    /* ========================================================
+       FRISSÍTÉS GOMBOK
+       ======================================================== */
+
+    document.getElementById("xRefreshBtn").onclick=function(){
+        RenderXRamps();
+    };
+
+    document.getElementById("dRefreshBtn").onclick=function(){
+        RenderDRamps();
+    };
 };
-
-document.getElementById("dAssignBtn").onclick=function(){
-AssignRamp("D");
-};
-
-document.getElementById("xRefreshBtn").onclick=function(){
-RenderRamps();
-};
-
-document.getElementById("dRefreshBtn").onclick=function(){
-RenderRamps();
-};
-
-RenderRamps();
-});
-
-/* ASSIGNMENTS REALTIME */
-db.ref("assignments").on("value",function(snapshot){
-cachedAssignments=snapshot.val()||[];
-RenderRamps();
-});
-
-/* HISTORY REALTIME */
-db.ref("history").on("value",function(snapshot){
-cachedHistory=snapshot.val()||[];
-
-var historyModal=document.getElementById("historyModal");
-if(historyModal&&historyModal.style.display==="flex"){
-RenderHistoryTable();
-}
-});
-
-/* LOG REALTIME */
-db.ref("logs").on("value",function(snapshot){
-cachedLogs=snapshot.val()||[];
-});
-
-/* LOCATIONS REALTIME */
-db.ref("locations").on("value",function(snapshot){
-cachedLocations=snapshot.val()||{};
-CreateRampOptions();
-RenderRamps();
-});
-};
-</script>
-
-<!-- =========================================================
-     X-SITE KONFIGURÁCIÓ
-     CSAK AZ ITT FELSOROLT RÁMPÁKHOZ AD HELYET ÉS ROUTETYPE-OT.
-     A RÁMPÁK SZÁMÁT NEM EZ A LISTA HATÁROZZA MEG.
-     ========================================================= -->
-<script type="text/plain" id="x_locations_data">
-XD-01; Jajj; CITY FIX
-XD-02; Hali; CITY-Belföld
-X-D0; ferde rampa hatul-!#N/A; Other
-X-01; 82-VESZPREM; DEPO-Belföld
-X-02; 1S-!#N/A; CITY-Belföld
-X-03; 3A-!#N/A; CITY-Belföld
-X-04; 3A-!#N/A; CITY-Belföld
-X-05; -!#N/A; CITY-Belföld
-X-06; 96-Pecs; DEPO-Belföld
-X-07; 96-Pecs; DEPO-Belföld
-X-08; 96-Pecs; DEPO-Belföld
-X-09; 2J ; 3J-!#N/A; DEPO-Belföld
-X-10; 1T-!#N/A; DEPO-Belföld
-X-11; 1R-!#N/A; DEPO-Belföld
-X-12; 5F - 6F-!#N/A; DEPO-Belföld
-X-13; 7F-!#N/A; DEPO-Belföld
-X-14; 7F-!#N/A; DEPO-Belföld
-X-15; 7F-!#N/A; DEPO-Belföld
-
-
-
-</script>
-
-<!-- =========================================================
-     D-SITE KONFIGURÁCIÓ
-     ========================================================= -->
-<script type="text/plain" id="d_locations_data">
-D-01; 35-Miskolc; DEPO-Belföld
-D-01; 35-Miskolc; DEPO-Belföld
-D-02; 35-Miskolc; DEPO-Belföld
-D-03; 2A-!#N/A; CITY-Belföld
-D-04; 2A-!#N/A; CITY-Belföld
-D-05; 1C-!#N/A; CITY-Belföld
-D-06; 1A-!#N/A; CITY-Belföld
-D-07; 1G-!#N/A; CITY-Belföld
-D-08; RO24-Kolozsvar; Manifest-Külföld
-D-09; R41-!#N/A; Manifest-Külföld
-D-10; D33.10-Eger; DEPO-Belföld
-D-11; -!#N/A; Other
-D-12; 48-Debrecen; DEPO-Belföld
-D-13; 48-Debrecen; DEPO-Belföld
-D-14; 8F - 2P-!#N/A; DEPO-Belföld
-D-15; CZ-D78 - DE - GH - FL - ES - IF-Roky; DEPO-Külföld
-
 </script>
 
 </body>
 </html>
-```
