@@ -34,6 +34,11 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background-color:#ffe5cc;co
 .android-logo:hover{transform:translateY(-50%) scale(1.1)}
 .container{max-width:1700px;margin:10px auto;padding:0 10px}
 .tables-container{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.special-ramps-container{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.special-ramps-container .ramp-table{min-width:900px}
+.quick-actions-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px;padding:0 2px}
+.quick-action-btn{background-color:#a855f7;color:#ffffff;border:1px solid #7e22ce;border-radius:4px;padding:9px 14px;font-size:13px;font-weight:bold;cursor:pointer}
+.quick-action-btn:hover{background-color:#9333ea}
 .site-container{background-color:white;border-radius:6px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid #93c5fd}
 .site-header-row{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2563eb;padding-bottom:4px;margin-bottom:6px}
 .site-container h2{margin:0;color:#1f2937;font-size:16px;border:none;padding:0}
@@ -62,6 +67,21 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background-color:#ffe5cc;co
 .danger-btn:hover{background-color:#eab308}
 #downloadLogBtn{background-color:#005a9e;color:white;height:30px;padding:0 12px;font-size:13px;border:0;border-radius:4px;cursor:pointer}
 #downloadLogBtn:hover{background-color:#004578}
+#downloadHistoryBtn{
+    background-color:#2563eb;
+    color:white;
+    height:30px;
+    padding:0 12px;
+    font-size:13px;
+    font-weight:bold;
+    border:1px solid #1d4ed8;
+    border-radius:4px;
+    cursor:pointer;
+}
+
+#downloadHistoryBtn:hover{
+    background-color:#1d4ed8;
+}
 .close-btn{background-color:#dc2626;color:white;height:30px;width:35px;padding:0;font-size:14px;font-weight:bold;display:flex;justify-content:center;align-items:center;border:0;border-radius:4px;cursor:pointer}
 .close-btn:hover{background-color:#b91c1c}
 .modal-body{overflow-y:auto;flex-grow:1}
@@ -112,7 +132,7 @@ body{font-size:14px}
 .site-header-row{padding-bottom:5px;margin-bottom:5px}
 .site-container h2{font-size:15px}
 .refresh-btn{height:28px;font-size:11px;padding:0 8px}
-.ramp-table{min-width:850px}
+.ramp-table{min-width:900px}
 .ramp-table th,.ramp-table td{white-space:nowrap;font-size:11px;padding:5px 6px}
 #assignmentModal .modal-content{width:calc(100vw - 16px)!important;max-width:calc(100vw - 16px);padding:10px;border-radius:7px}
 #assignmentModal .modal-header{padding-bottom:8px;margin-bottom:10px}
@@ -129,7 +149,7 @@ input,select{height:38px;font-size:13px}
 .modal-header-actions{gap:5px;flex-shrink:0}
 .modal-header-actions button{font-size:11px}
 .close-btn{width:32px;height:30px}
-.danger-btn,#downloadLogBtn{height:30px;padding:0 7px;font-size:10px}
+.danger-btn,#downloadLogBtn,#downloadHistoryBtn{height:30px;padding:0 7px;font-size:10px}
 .modal-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .modal-body .ramp-table{min-width:950px}
 #locationsTextarea{width:100%!important;height:300px!important;font-size:12px!important}
@@ -147,6 +167,17 @@ input,select{height:38px;font-size:13px}
 #assignmentModal .modal-header h2{font-size:14px}
 .assignment-buttons{grid-template-columns:1fr}
 }
+
+/* Frissítés gomb egyedi formázása */
+#refreshDataBtn {
+    background-color: #16a34a;
+    color: white;
+    border: 1px solid #15803d;
+}
+
+#refreshDataBtn:hover {
+    background-color: #15803d;
+}
 </style>
 </head>
 
@@ -159,12 +190,14 @@ input,select{height:38px;font-size:13px}
         <div class="header-left-actions">
             <button type="button" class="header-btn large-bold-btn" id="openLayoutBtn">LayOut</button>
             <button type="button" class="header-btn large-bold-btn" id="openHistoryBtn">TruckList-[RealTime]</button>
+			<button type="button" class="header-btn large-bold-btn" id="refreshDataBtn">Frissítés</button>
+			<button type="button" class="header-btn large-bold-btn" id="startupBtn">StartUp</button>
         </div>
     </div>
     <div class="header-right">
         <div class="header-actions">
             <button type="button" class="header-btn" id="openSettingsBtn">Location Setting's</button>
-            <button type="button" class="header-btn" id="openLogBtn">Log.txt</button>
+            <button type="button" class="header-btn" id="openLogBtn">EventLogDownLoad-[txt]</button>
             <button type="button" class="header-btn" id="clearAllDataBtn">ClearAllData</button>
         </div>
     </div>
@@ -172,15 +205,30 @@ input,select{height:38px;font-size:13px}
 </div>
 
 <div class="container">
+    <div class="site-container special-ramps-container" style="margin-bottom:10px">
+        <div class="site-header-row">
+            <h2>Külön rámpák</h2>
+        </div>
+        <table class="ramp-table">
+            <thead><tr>
+                <th>ID</th><th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th>
+                <th>Rendszám</th><th>Időkapu</th><th>Művelet</th><th>Idő</th><th>Comment</th><th></th>
+            </tr></thead>
+            <tbody id="specialRampTable"></tbody>
+        </table>
+    </div>
+    <div class="quick-actions-bar" id="quickActionsBar">
+        <button type="button" class="quick-action-btn" id="cityFixCarSetBtn">City Fix Car Set</button>
+    </div>
     <div class="tables-container">
         <div class="site-container">
             <div class="site-header-row">
                 <h2>X-Site rámpák</h2>
-                <button type="button" class="refresh-btn" id="xRefreshBtn">Frissítés</button>
+                
             </div>
             <table class="ramp-table">
                 <thead><tr>
-                    <th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th>
+                    <th>ID</th><th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th>
                     <th>Rendszám</th><th>Időkapu</th><th>Művelet</th><th>Idő</th><th>Comment</th><th></th>
                 </tr></thead>
                 <tbody id="xRampTable"></tbody>
@@ -190,11 +238,11 @@ input,select{height:38px;font-size:13px}
         <div class="site-container">
             <div class="site-header-row">
                 <h2>D-Site rámpák</h2>
-                <button type="button" class="refresh-btn" id="dRefreshBtn">Frissítés</button>
+
             </div>
             <table class="ramp-table">
                 <thead><tr>
-                    <th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th>
+                    <th>ID</th><th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th>
                     <th>Rendszám</th><th>Időkapu</th><th>Művelet</th><th>Idő</th><th>Comment</th><th></th>
                 </tr></thead>
                 <tbody id="dRampTable"></tbody>
@@ -284,7 +332,7 @@ input,select{height:38px;font-size:13px}
             </p>
             <textarea id="locationsTextarea" spellcheck="false" style="width:100%;height:300px;padding:8px;font-family:monospace;font-size:12px;border:1px solid #ccc;border-radius:4px;resize:vertical;"></textarea>
             <div class="location-settings-buttons">
-                <button type="button" id="startupLocationsBtn" class="location-startup-btn">StartUp</button>
+                
                 <button type="button" id="saveLocationsBtn" class="location-save-btn">Mentés</button>
             </div>
         </div>
@@ -296,6 +344,7 @@ input,select{height:38px;font-size:13px}
         <div class="modal-header">
             <h2>Elhagyott / Távozott autók előzményei</h2>
             <div class="modal-header-actions">
+                <button type="button" id="downloadHistoryBtn">HistoryDownLoad</button>
                 <button type="button" class="danger-btn" id="clearHistoryBtn">Lista ürítése</button>
                 <button type="button" class="close-btn" id="closeHistoryBtn">X</button>
             </div>
@@ -304,7 +353,7 @@ input,select{height:38px;font-size:13px}
             <table class="ramp-table">
                 <thead><tr>
                     <th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th><th>Rendszám</th>
-                    <th>Időkapu</th><th>Művelet</th><th>Comment</th><th>Érkezési idő</th><th>Távozás ideje</th>
+                    <th>Időkapu</th><th>Művelet</th><th>Comment</th><th>Érkezési idő</th><th>Távozás ideje</th><th>Esemény</th>
                 </tr></thead>
                 <tbody id="historyTableBody"></tbody>
             </table>
@@ -380,6 +429,7 @@ var cachedHistory=[];
 var cachedLogs=[];
 var cachedLocations={};
 var cachedDefaultLocations={};
+var cachedRampIds={};
 var showAssignmentsOnRamps=false;
 
 
@@ -465,9 +515,117 @@ function SaveHistory(HistoryV){
 
 function GetLocations(){return cachedLocations||{};}
 
+/* ============================================================
+   ÁLLANDÓ RÁMPAAZONOSÍTÓK
+   - A rámpa ID-je a fizikai rámpához tartozik, nem a kamionhoz.
+   - A settings/rampIds Firebase ág őrzi az összes kiosztott ID-t.
+   - Törölt rámpa ID-je sem törlődik és nem kerül újra kiosztásra.
+   ============================================================ */
+
+function NormalizeRampKey(RampV){
+    return String(RampV||"").trim().toUpperCase();
+}
+
+function GetRampIdNumber(RampV){
+    var name=NormalizeRampKey(RampV);
+    if(name==="XD-01")return "F1";
+    if(name==="XD-02")return "F2";
+    var match=name.match(/^(X|D)-(\d+)$/);
+    if(!match)return "";
+    return String(Number(match[2]));
+}
+
+function GetRampId(RampV){
+    var name=NormalizeRampKey(RampV);
+    if(name==="XD-01")return "x#F1";
+    if(name==="XD-02")return "x#F2";
+    var match=name.match(/^(X|D)-(\d+)$/);
+    if(!match)return "-";
+    return match[1].toLowerCase()+"#"+Number(match[2]);
+}
+
+function SaveRampIds(){
+    db.ref("settings/rampIds").set(cachedRampIds||{});
+}
+
+/*
+ * Az X és D oldalak külön ID-térben vannak.
+ * Az ID-k a rámpanévből származnak: X-01 -> x#1, D-01 -> d#1.
+ * Az XD-01 / XD-02 különleges rámpák: x#F1 / x#F2.
+ * Így az X és D oldalon ugyanaz a szám biztonságosan használható.
+ */
+function EnsureRampIds(LocationsV){
+    LocationsV=LocationsV||{};
+    cachedRampIds=cachedRampIds||{};
+
+    Object.keys(LocationsV).forEach(function(rampName){
+        var key=NormalizeRampKey(rampName);
+        var item=LocationsV[rampName];
+        var id=GetRampId(rampName);
+        cachedRampIds[key]=id;
+
+        if(!item||typeof item!=="object"){
+            item={location:String(item||""),routeType:"",comment:"",active:"Off"};
+        }
+        item.id=id;
+        LocationsV[rampName]=item;
+    });
+
+    return LocationsV;
+}
+
+/* Régi X-03...X-40 neveket X-01...X-38 névre alakítjuk. */
+function GetMigratedRampName(RampV){
+    var name=NormalizeRampKey(RampV);
+    var match=name.match(/^X-(\d{2})$/);
+    if(match){
+        var number=Number(match[1]);
+        if(number>=3&&number<=40){
+            return "X-"+String(number-2).padStart(2,"0");
+        }
+    }
+    return name;
+}
+
+function MigrateLocationNames(LocationsV){
+    var result={};
+    var changed=false;
+    Object.keys(LocationsV||{}).forEach(function(oldName){
+        var newName=GetMigratedRampName(oldName);
+        if(newName!==oldName)changed=true;
+        /* Ha az új név már létezik, az új nevű rekordot részesítjük előnyben. */
+        if(!Object.prototype.hasOwnProperty.call(result,newName) || newName===oldName){
+            result[newName]=LocationsV[oldName];
+        }
+    });
+    return {locations:result,changed:changed};
+}
+
+function MigrateRampReferences(ItemsV){
+    var changed=false;
+    var items=Array.isArray(ItemsV)?ItemsV:[];
+    items.forEach(function(item){
+        if(item&&item.ramp){
+            var newName=GetMigratedRampName(item.ramp);
+            if(newName!==item.ramp){item.ramp=newName;changed=true;}
+            var expectedId=GetRampId(item.ramp);
+            if(item.rampId!==expectedId){item.rampId=expectedId;changed=true;}
+        }
+    });
+    return {items:items,changed:changed};
+}
+
+
+function IsSameRampReference(ItemV,RampV){
+    if(!ItemV)return false;
+    var wantedId=GetRampId(RampV);
+    if(ItemV.rampId&&wantedId!=="-"&&String(ItemV.rampId)===wantedId)return true;
+    return NormalizeRampKey(ItemV.ramp)===NormalizeRampKey(RampV);
+}
+
 function SaveLocationsMap(LocationsV){
-    cachedLocations=LocationsV||{};
-    cachedDefaultLocations={};
+    cachedLocations=EnsureRampIds(LocationsV||{});
+    SaveRampIds();
     db.ref("locations").set(cachedLocations);
 }
 
@@ -493,7 +651,7 @@ function CreateStartupLocations(){
         active:"Off"
     };
 
-    for(var xRampNumber=3;xRampNumber<=40;xRampNumber++){
+    for(var xRampNumber=1;xRampNumber<=38;xRampNumber++){
         var xRampName="X-"+String(xRampNumber).padStart(2,"0");
 
         startupLocations[xRampName]={
@@ -557,8 +715,7 @@ function GetDeleteButtonHtml(RampV) {
     var AssignmentsV = GetAssignments();
 
     var AssignmentV = AssignmentsV.find(function (ItemV) {
-        return String(ItemV.ramp || "").trim().toUpperCase() ===
-               String(RampV || "").trim().toUpperCase();
+        return IsSameRampReference(ItemV,RampV);
     });
 
     if (!AssignmentV) {
@@ -575,11 +732,19 @@ function GetDeleteButtonHtml(RampV) {
    ============================================================ */
 
 function GetXRamps(){
-    var locations=GetLocations();
+    var ramps = [];
 
-    return Object.keys(locations).filter(function(rampName){
-        var normalized=String(rampName).trim().toUpperCase();
-        return normalized.startsWith("X");
+    for(var i = 1; i <= 40; i++){
+        ramps.push("X-" + String(i).padStart(2, "0"));
+    }
+
+    return ramps;
+}
+
+function GetSpecialRamps(){
+    var locations=GetLocations();
+    return ["XD-01","XD-02"].filter(function(name){
+        return Object.prototype.hasOwnProperty.call(locations,name);
     });
 }
 
@@ -588,8 +753,8 @@ function GetDRamps(){
 
     return Object.keys(locations).filter(function(rampName){
         var normalized=String(rampName).trim().toUpperCase();
-        return normalized.startsWith("D");
-    });
+        return normalized.startsWith("D-");
+    }).sort(function(a,b){return Number(a.substring(2))-Number(b.substring(2));});
 }
 
 
@@ -650,7 +815,7 @@ function SetRouteTypeSelectValue(SelectElV,RouteTypeV){
 function CreateRampOptions(){
     var RampSelect=document.getElementById("modalRampSelect");
     var MoveRampSelect=document.getElementById("modalMoveRampSelect");
-    var allRamps=GetXRamps().concat(GetDRamps());
+    var allRamps=GetSpecialRamps().concat(GetXRamps(),GetDRamps());
 
     if(RampSelect){
         RampSelect.innerHTML='<option value="">-- Válassz --</option>';
@@ -658,7 +823,7 @@ function CreateRampOptions(){
         allRamps.forEach(function(rampName){
             var opt=document.createElement("option");
             opt.value=rampName;
-            opt.textContent=rampName;
+            opt.textContent=GetRampId(rampName)+" – "+rampName;
             RampSelect.appendChild(opt);
         });
     }
@@ -669,41 +834,59 @@ function CreateRampOptions(){
         allRamps.forEach(function(rampName){
             var opt=document.createElement("option");
             opt.value=rampName;
-            opt.textContent=rampName;
+            opt.textContent=GetRampId(rampName)+" – "+rampName;
             MoveRampSelect.appendChild(opt);
         });
     }
 }
 
 
+
 /* ============================================================
    RAMP SELECT -> ROUTETYPE
+   - A már kiválasztott RouteType megmarad rámpaváltáskor.
+   - Ha még nincs RouteType kiválasztva, betölti a rámpa
+     alapértelmezett RouteType értékét, ha van ilyen.
+   - A Process mezőt nem módosítja.
    ============================================================ */
 
 function SetupModalRampRouteType(){
-    var RampSelect=document.getElementById("modalRampSelect");
-    var RouteTypeSelect=document.getElementById("modalRouteTypeSelect");
 
-    if(!RampSelect||!RouteTypeSelect)return;
+    var RampSelect = document.getElementById("modalRampSelect");
+    var RouteTypeSelect = document.getElementById("modalRouteTypeSelect");
 
-    RampSelect.addEventListener("change",function(){
-        var selectedRamp=RampSelect.value;
+    if(!RampSelect || !RouteTypeSelect) return;
 
-        if(!selectedRamp){
-            RouteTypeSelect.value="";
+    RampSelect.addEventListener("change", function(){
+
+        var selectedRamp = RampSelect.value;
+
+        // Ha már van kiválasztott RouteType, megtartjuk.
+        if(RouteTypeSelect.value !== ""){
             return;
         }
 
-        var locationData=GetLocations()[selectedRamp];
-        var routeType="";
-
-        if(locationData&&typeof locationData==="object"){
-            routeType=locationData.routeType||"";
+        // Üres rámpaválasztásnál nem módosítjuk a RouteType-ot.
+        if(!selectedRamp){
+            return;
         }
 
-        SetRouteTypeSelectValue(RouteTypeSelect,routeType);
+        // Ha még nincs RouteType, megpróbáljuk betölteni
+        // az új rámpa alapértelmezett értékét.
+        var locationData = GetLocations()[selectedRamp];
+        var routeType = "";
+
+        if(locationData && typeof locationData === "object"){
+            routeType = locationData.routeType || "";
+        }
+
+        if(routeType){
+            SetRouteTypeSelectValue(RouteTypeSelect, routeType);
+        }
+
     });
 }
+
 
 
 /* ============================================================
@@ -742,7 +925,7 @@ function OpenAssignmentModal(RampV){
 
     var AssignmentsV=GetAssignments();
     var ExistingAssignmentV=AssignmentsV.find(function(item){
-        return item.ramp===RampV;
+        return IsSameRampReference(item,RampV);
     });
 
     if(ExistingAssignmentV){
@@ -779,6 +962,37 @@ function OpenAssignmentModal(RampV){
 
     setTimeout(function(){
         TruckInput.focus();
+    },100);
+}
+
+/* Gyors beviteli sablon: City Fix Car Set */
+function OpenCityFixCarSetModal(){
+    var modal=document.getElementById("assignmentModal");
+    var RampSelect=document.getElementById("modalRampSelect");
+    var TruckInput=document.getElementById("modalTruckInput");
+    var RouteTypeSelect=document.getElementById("modalRouteTypeSelect");
+    var PlateInput=document.getElementById("modalPlateInput");
+    var SlotInput=document.getElementById("modalSlotInput");
+    var OperationSelect=document.getElementById("modalOperationSelect");
+    var CommentInput=document.getElementById("modalCommentInput");
+    var MoveRampSelect=document.getElementById("modalMoveRampSelect");
+    var Title=document.getElementById("assignmentModalTitle");
+
+    /* Csak a rámpát kelljen kiválasztani; minden más előre kitöltve. */
+    RampSelect.value="";
+    TruckInput.value="City Auto";
+    RouteTypeSelect.value="CITY FIX";
+    PlateInput.value="";
+    SlotInput.value="";
+    OperationSelect.value="Felpakolás";
+    CommentInput.value="City Fix Rámpa";
+    MoveRampSelect.value="";
+    Title.textContent="City Fix Car Set";
+    document.getElementById("assignmentMessage").textContent="";
+    modal.style.display="flex";
+
+    setTimeout(function(){
+        RampSelect.focus();
     },100);
 }
 
@@ -838,6 +1052,7 @@ function GetModalAssignmentData(){
 
     return {
         ramp:RampV,
+        rampId:GetRampId(RampV),
         truck:TruckV,
         routeType:RouteTypeV,
         plate:PlateV,
@@ -860,7 +1075,7 @@ function AssignRampFromModal(){
 
     var AssignmentsV=GetAssignments();
     var ExistingV=AssignmentsV.find(function(item){
-        return item.ramp===DataV.ramp;
+        return IsSameRampReference(item,DataV.ramp);
     });
 
     if(ExistingV){
@@ -887,6 +1102,7 @@ function AssignRampFromModal(){
 
     var NewAssignmentV={
         ramp:DataV.ramp,
+        rampId:GetRampId(DataV.ramp),
         truck:DataV.truck,
         routeType:DataV.routeType,
         plate:DataV.plate,
@@ -939,7 +1155,7 @@ function MoveRampFromModal(){
     var AssignmentsV=GetAssignments();
 
     var SourceAssignmentV=AssignmentsV.find(function(ItemV){
-        return ItemV.ramp===DataV.ramp;
+        return IsSameRampReference(ItemV,DataV.ramp);
     });
 
     if(!SourceAssignmentV){
@@ -948,7 +1164,7 @@ function MoveRampFromModal(){
     }
 
     var TargetAssignmentV=AssignmentsV.find(function(ItemV){
-        return ItemV.ramp===TargetRampV;
+        return IsSameRampReference(ItemV,TargetRampV);
     });
 
     if(TargetAssignmentV){
@@ -967,7 +1183,8 @@ function MoveRampFromModal(){
             hour:"2-digit",
             minute:"2-digit"
         });
-
+		
+		TargetAssignmentV.eventType = "Move";
         HistoryV.unshift(TargetAssignmentV);
         SaveHistory(HistoryV);
 
@@ -975,6 +1192,33 @@ function MoveRampFromModal(){
             return ItemV.ramp!==TargetRampV;
         });
     }
+	
+	
+
+// --------------------------------------------------------
+// HISTORY – a forrásrámpáról elmozgatott kamion mentése
+// --------------------------------------------------------
+
+
+var SourceHistoryV = Object.assign({}, SourceAssignmentV);
+
+SourceHistoryV.leftTime = new Date().toLocaleTimeString(
+    "hu-HU",
+    {
+        hour: "2-digit",
+        minute: "2-digit"
+    }
+);
+
+SourceHistoryV.eventType = "Move";
+
+var MoveHistoryV = GetHistory();
+
+MoveHistoryV.unshift(SourceHistoryV);
+
+SaveHistory(MoveHistoryV);
+
+
 
     /* Forrásrámpa Location adatainak elmentése mozgatás előtt. */
     var LocationsV=GetLocations();
@@ -997,6 +1241,7 @@ function MoveRampFromModal(){
 
     var MovedAssignmentV={
         ramp:TargetRampV,
+        rampId:GetRampId(TargetRampV),
         truck:DataV.truck,
         routeType:DataV.routeType,
         plate:DataV.plate,
@@ -1024,14 +1269,16 @@ function MoveRampFromModal(){
     }
 
     LocationsV[TargetRampV]={
+        id:GetRampIdNumber(TargetRampV),
         location:SourceLocationV.location||"",
         routeType:DataV.routeType||SourceLocationV.routeType||"",
         comment:DataV.comment||SourceLocationV.comment||"",
         active:"On"
     };
 
-    /* A forrásrámpa összes Location adata törlődik. */
+    /* A forrásrámpa ID-je a forrásrámpán marad; csak a többi adat ürül. */
     LocationsV[DataV.ramp]={
+        id:GetRampIdNumber(DataV.ramp),
         location:"",
         routeType:"",
         comment:"",
@@ -1101,6 +1348,7 @@ function DeleteAssignment(RampV) {
 
             if (!item || typeof item !== "object") {
                 item = {
+                    id: GetRampIdNumber(key),
                     location: "",
                     routeType: "",
                     comment: "",
@@ -1131,54 +1379,99 @@ function DeleteAssignment(RampV) {
 }
 
 
-
 /* ============================================================
-   PIROS X – TELJES RÁMPASOR RESET
-   - Kamion-hozzárendelés törlése
-   - Tárhely, RouteType és Comment ürítése
-   - Rámpa Off állapotba állítása
+   PIROS X – TÖRLÉS ÉS HISTORY
+   - A törölt kamion bekerül a TruckList-[RealTime] előzménybe.
+   - Megőrzi a kamion összes korábbi adatát.
+   - Rögzíti a távozás idejét.
    ============================================================ */
 
-function DeleteModalAssignment(RampV){
+function DeleteModalAssignment(RampV) {
 
-    var RampKeyV=String(RampV||"").trim().toUpperCase();
+    var RampKeyV = String(RampV || "").trim().toUpperCase();
 
-    if(!RampKeyV)return;
+    if (!RampKeyV) return;
 
-    var AssignmentsV=GetAssignments();
+    var AssignmentsV = GetAssignments();
 
-    var FilteredAssignmentsV=AssignmentsV.filter(function(ItemV){
-        return String(ItemV.ramp||"").trim().toUpperCase()!==RampKeyV;
+    // A törlendő kamion megkeresése.
+    var DeletedAssignmentV = AssignmentsV.find(function (ItemV) {
+        return IsSameRampReference(ItemV, RampV);
     });
 
-    var LocationsV=GetLocations();
-    var FoundRampV=false;
+    // --------------------------------------------------------
+    // 1. HISTORY – törlés előtti adatok mentése
+    // --------------------------------------------------------
 
-    Object.keys(LocationsV).forEach(function(KeyV){
+    if (DeletedAssignmentV) {
 
-        if(String(KeyV).trim().toUpperCase()!==RampKeyV)return;
 
-        FoundRampV=true;
+        var HistoryV = GetHistory();
 
-        LocationsV[KeyV]={
-            location:"",
-            routeType:"",
-            comment:"",
-            active:"Off"
-        };
+        var HistoryItemV = Object.assign({}, DeletedAssignmentV);
+
+        HistoryItemV.leftTime = new Date().toLocaleTimeString(
+            "hu-HU",
+            {
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+
+        HistoryItemV.eventType = "Write";
+
+        HistoryV.unshift(HistoryItemV);
+
+        SaveHistory(HistoryV);
+
+    }
+
+    // --------------------------------------------------------
+    // 2. Kamion-hozzárendelés törlése
+    // --------------------------------------------------------
+
+    var FilteredAssignmentsV = AssignmentsV.filter(function (ItemV) {
+        return !IsSameRampReference(ItemV, RampV);
     });
 
     SaveAssignments(FilteredAssignmentsV);
 
-    if(FoundRampV){
+    // --------------------------------------------------------
+    // 3. Rámpaadatok kiürítése és kikapcsolása
+    // --------------------------------------------------------
+
+    var LocationsV = GetLocations();
+    var FoundRampV = false;
+
+    Object.keys(LocationsV).forEach(function (KeyV) {
+
+        if (String(KeyV).trim().toUpperCase() !== RampKeyV) return;
+
+        FoundRampV = true;
+
+        LocationsV[KeyV] = {
+            id: GetRampIdNumber(KeyV),
+            location: "",
+            routeType: "",
+            comment: "",
+            active: "Off"
+        };
+    });
+
+    if (FoundRampV) {
         SaveLocationsMap(LocationsV);
     }
+
+    // --------------------------------------------------------
+    // 4. Táblázatok és napló frissítése
+    // --------------------------------------------------------
 
     CreateRampOptions();
     RenderRamps();
 
-    WriteLog("DeleteRampReset: "+RampKeyV);
+    WriteLog("DeleteRampReset: " + RampKeyV);
 }
+
 
 
 
@@ -1244,6 +1537,41 @@ function SetupRampRowEvents(RowV, RampV) {
 
 
 /* ============================================================
+   SPECIAL RAMP RENDER (XD-01 / XD-02)
+   ============================================================ */
+
+function RenderSpecialRamps(){
+    var table=document.getElementById("specialRampTable");
+    if(!table)return;
+    table.innerHTML="";
+    var assignments=GetAssignments();
+
+    GetSpecialRamps().forEach(function(rampName){
+        var assignment=showAssignmentsOnRamps?assignments.find(function(a){
+            return IsSameRampReference(a,rampName);
+        }):null;
+        var info=GetLocationInfo(rampName);
+        var routeType=assignment?(assignment.routeType||info.routeType||"-"):(info.routeType||"-");
+        var tr=document.createElement("tr");
+        tr.className="ramp-clickable "+(assignment?"occupied ":"free ")+GetRouteTypeClass(routeType);
+        tr.innerHTML=
+            "<td>"+GetRampId(rampName)+"</td>"+
+            "<td>"+rampName+"</td>"+
+            "<td>"+info.location+"</td>"+
+            "<td>"+(assignment?assignment.truck:"Szabad")+"</td>"+
+            "<td>"+routeType+"</td>"+
+            "<td>"+(assignment?(assignment.plate||"-"):"-")+"</td>"+
+            "<td>"+(assignment?(assignment.slot||"-"):"-")+"</td>"+
+            "<td>"+(assignment?(assignment.operation||"-"):"-")+"</td>"+
+            "<td>"+(assignment?(assignment.time||"-"):"-")+"</td>"+
+            "<td>"+(assignment?(assignment.comment||info.comment||"-"):(info.comment||"-"))+"</td>"+
+            "<td>"+GetDeleteButtonHtml(rampName)+"</td>";
+        SetupRampRowEvents(tr,rampName);
+        table.appendChild(tr);
+    });
+}
+
+/* ============================================================
    X RAMP RENDER
    ============================================================ */
 
@@ -1257,7 +1585,7 @@ function RenderXRamps(){
 
     GetXRamps().forEach(function(rName){
         var assignment=showAssignmentsOnRamps?assignments.find(function(a){
-            return a.ramp===rName;
+            return IsSameRampReference(a,rName);
         }):null;
 
         var info=GetLocationInfo(rName);
@@ -1273,6 +1601,7 @@ function RenderXRamps(){
             tr.className+="occupied "+GetRouteTypeClass(routeType);
 
             tr.innerHTML=
+                "<td>"+GetRampId(rName)+"</td>"+
                 "<td>"+rName+"</td>"+
                 "<td>"+loc+"</td>"+
                 "<td>"+assignment.truck+"</td>"+
@@ -1287,6 +1616,7 @@ function RenderXRamps(){
             tr.className+="free "+GetRouteTypeClass(defaultRouteType);
 
             tr.innerHTML=
+                "<td>"+GetRampId(rName)+"</td>"+
                 "<td>"+rName+"</td>"+
                 "<td>"+loc+"</td>"+
                 "<td>Szabad</td>"+
@@ -1319,7 +1649,7 @@ function RenderDRamps(){
 
     GetDRamps().forEach(function(dName){
         var assignmentD=showAssignmentsOnRamps?assignments.find(function(a){
-            return a.ramp===dName;
+            return IsSameRampReference(a,dName);
         }):null;
 
         var info=GetLocationInfo(dName);
@@ -1335,6 +1665,7 @@ function RenderDRamps(){
             trD.className+="occupied "+GetRouteTypeClass(routeTypeD);
 
             trD.innerHTML=
+                "<td>"+GetRampId(dName)+"</td>"+
                 "<td>"+dName+"</td>"+
                 "<td>"+locD+"</td>"+
                 "<td>"+assignmentD.truck+"</td>"+
@@ -1349,6 +1680,7 @@ function RenderDRamps(){
             trD.className+="free "+GetRouteTypeClass(defaultRouteTypeD);
 
             trD.innerHTML=
+                "<td>"+GetRampId(dName)+"</td>"+
                 "<td>"+dName+"</td>"+
                 "<td>"+locD+"</td>"+
                 "<td>Szabad</td>"+
@@ -1372,6 +1704,7 @@ function RenderDRamps(){
    ============================================================ */
 
 function RenderRamps(){
+    RenderSpecialRamps();
     RenderXRamps();
     RenderDRamps();
 }
@@ -1404,7 +1737,8 @@ function RenderHistoryTable(){
             "<td>"+item.operation+"</td>"+
             "<td>"+(item.comment||"-")+"</td>"+
             "<td>"+(item.time||"-")+"</td>"+
-            "<td>"+(item.leftTime||"-")+"</td>";
+            "<td>"+(item.leftTime||"-")+"</td>"+
+			"<td>"+(item.eventType||"-")+"</td>";
 
         historyTableBody.appendChild(tr);
     });
@@ -1414,54 +1748,65 @@ function RenderHistoryTable(){
 function SetupModals(){
     var settingsModal=document.getElementById("settingsModal");
 
-    document.getElementById("openSettingsBtn").onclick=function(){
-        if(!CheckPassword())return;
+document.getElementById("cityFixCarSetBtn").onclick=function(){
+if(!CheckPassword())return;
 
-        var locations=GetLocations();
-        var assignments=GetAssignments();
+OpenCityFixCarSetModal();
 
-        var text="Rámpa;Tárhely;Kamion / útvonal;RouteType;Rendszám;Időkapu;Művelet;Idő;Comment;Active/Inactive\n";
+};
 
-        Object.keys(locations).forEach(function(rampName){
-            var item=locations[rampName]||{};
+document.getElementById("openSettingsBtn").onclick=function(){
+    if(!CheckPassword())return;
 
-            if(typeof item!=="object"){
-                item={
-                    location:String(item),
-                    routeType:"",
-                    comment:"",
-                    active:"On"
-                };
-            }
+    var locations=GetLocations();
+    var assignments=GetAssignments();
 
-            var normalizedRamp=String(rampName).trim().toUpperCase();
+    var text="Id;Rámpa;Tárhely;Kamion / útvonal;RouteType;Rendszám;Időkapu;Művelet;Idő;Comment;Active/Inactive\n";
 
-            var assignment=assignments.find(function(a){
-                return String(a.ramp||"").trim().toUpperCase()===normalizedRamp;
-            });
+    Object.keys(locations).forEach(function(rampName){
+        var item=locations[rampName]||{};
 
-            var activeValue=
-                String(item.active||"On").trim().toUpperCase()==="OFF"
-                ? "Off"
-                : "On";
+        if(typeof item!=="object"){
+            item={
+                location:String(item),
+                routeType:"",
+                comment:"",
+                active:"On"
+            };
+        }
 
-            text+=[
-                rampName,
-                item.location||"",
-                assignment ? assignment.truck||"" : "",
-                assignment ? assignment.routeType||item.routeType||"" : item.routeType||"",
-                assignment ? assignment.plate||"" : "",
-                assignment ? assignment.slot||"" : "",
-                assignment ? assignment.operation||"" : "",
-                assignment ? assignment.time||"" : "",
-                assignment ? assignment.comment||item.comment||"" : item.comment||"",
-                activeValue
-            ].join(";")+"\n";
+        var rampId=item.id||GetRampId(rampName);
+        var normalizedRamp=String(rampName).trim().toUpperCase();
+
+        var assignment=assignments.find(function(a){
+            return String(a.rampId||GetRampId(a.ramp||"")).trim().toLowerCase()
+                ===String(rampId).trim().toLowerCase();
         });
 
-        document.getElementById("locationsTextarea").value=text;
-        settingsModal.style.display="flex";
-    };
+        var activeValue=
+            String(item.active||"On").trim().toUpperCase()==="OFF"
+            ? "Off"
+            : "On";
+
+        text+=[
+            rampId,
+            item.rampLabel||rampName,
+            item.location||"",
+            assignment ? assignment.truck||"" : "",
+            assignment ? assignment.routeType||item.routeType||"" : item.routeType||"",
+            assignment ? assignment.plate||"" : "",
+            assignment ? assignment.slot||"" : "",
+            assignment ? assignment.operation||"" : "",
+            assignment ? assignment.time||"" : "",
+            assignment ? assignment.comment||item.comment||"" : item.comment||"",
+            activeValue
+        ].join(";")+"\n";
+    });
+
+    document.getElementById("locationsTextarea").value=text;
+    settingsModal.style.display="flex";
+};
+
 
     document.getElementById("closeSettingsBtn").onclick=function(){
         settingsModal.style.display="none";
@@ -1476,16 +1821,45 @@ function SetupModals(){
    - A listában nem szereplő rámpák adatai nem változnak.
    ======================================================== */
 
+
 document.getElementById("saveLocationsBtn").onclick=function(){
 
     var text=document.getElementById("locationsTextarea").value;
     var lines=text.split(/\r?\n/);
 
-    var newLocs={};
-    var seenRamps={};
+    var newLocs=Object.assign({},GetLocations());
+    var seenIds={};
     var importedRows=[];
     var firstDataLine=true;
     var errorMessage="";
+
+    function NormalizeImportId(value){
+        return String(value||"").trim().toLowerCase();
+    }
+
+    function FindRampById(id){
+        var wantedId=NormalizeImportId(id);
+
+        if(!wantedId)return "";
+
+        var rampNames=Object.keys(newLocs);
+
+        for(var r=0;r<rampNames.length;r++){
+            var name=rampNames[r];
+            var item=newLocs[name];
+
+            var existingId=
+                item&&typeof item==="object"&&item.id
+                ? item.id
+                : GetRampId(name);
+
+            if(NormalizeImportId(existingId)===wantedId){
+                return name;
+            }
+        }
+
+        return "";
+    }
 
     for(var i=0;i<lines.length;i++){
 
@@ -1502,21 +1876,24 @@ document.getElementById("saveLocationsBtn").onclick=function(){
             return part.trim();
         });
 
-        if(parts.length<10){
-            errorMessage="A(z) "+(i+1)+". sorban nincs meg mind a 10 oszlop.";
+        if(parts.length<11){
+            errorMessage="A(z) "+(i+1)+". sorban nincs meg mind a 11 oszlop.";
             break;
         }
 
-        var ramp=parts[0].toUpperCase();
-        var activeValue=parts[9].toUpperCase();
+        var rampId=parts[0];
+        var rampLabel=parts[1];
+        var activeValue=parts[10].toUpperCase();
 
-        if(!ramp||(!ramp.startsWith("X")&&!ramp.startsWith("D"))){
-            errorMessage="Hibás rámpanév a(z) "+(i+1)+". sorban: "+parts[0];
+        if(!rampId){
+            errorMessage="Hiányzó Id a(z) "+(i+1)+". sorban.";
             break;
         }
 
-        if(seenRamps[ramp]){
-            errorMessage="Duplikált rámpa a listában: "+ramp;
+        var normalizedId=NormalizeImportId(rampId);
+
+        if(seenIds[normalizedId]){
+            errorMessage="Duplikált Id a listában: "+rampId;
             break;
         }
 
@@ -1525,45 +1902,53 @@ document.getElementById("saveLocationsBtn").onclick=function(){
             break;
         }
 
-        seenRamps[ramp]=true;
+        seenIds[normalizedId]=true;
 
-        /* Off esetén minden mező üresre áll. */
-        if(activeValue==="OFF"){
+        /*
+         * Az Id alapján keressük meg a meglévő fizikai rámpát.
+         * Ismeretlen Id esetén nem hozunk létre új rámpát.
+         */
+        var realRamp=FindRampById(rampId);
 
-            newLocs[ramp]={
-                location:"",
-                routeType:"",
-                comment:"",
-                active:"Off"
-            };
-
-            importedRows.push({
-                ramp:ramp,
-                active:"OFF",
-                truck:""
-            });
-
-        }else{
-
-            newLocs[ramp]={
-                location:parts[1],
-                routeType:parts[3],
-                comment:parts[8],
-                active:"On"
-            };
-
-            importedRows.push({
-                ramp:ramp,
-                truck:parts[2],
-                routeType:parts[3],
-                plate:parts[4],
-                slot:parts[5],
-                operation:parts[6],
-                time:parts[7],
-                comment:parts[8],
-                active:"ON"
-            });
+        if(!realRamp){
+            console.warn("Nem létező rámpa-ID, kihagyva:",rampId);
+            continue;
         }
+
+        /*
+         * Off esetén a sorból nem töltünk be adatokat.
+         * A meglévő Firebase-adatokat nem ürítjük ki emiatt.
+         */
+        if(activeValue==="OFF"){
+            continue;
+        }
+
+        var existingItem=newLocs[realRamp];
+
+        if(!existingItem||typeof existingItem!=="object"){
+            existingItem={};
+        }
+
+        newLocs[realRamp]=Object.assign({},existingItem,{
+            id:existingItem.id||GetRampId(realRamp),
+            rampLabel:rampLabel,
+            location:parts[2],
+            routeType:parts[4],
+            comment:parts[9],
+            active:"On"
+        });
+
+        importedRows.push({
+            ramp:realRamp,
+            rampId:existingItem.id||GetRampId(realRamp),
+            truck:parts[3],
+            routeType:parts[4],
+            plate:parts[5],
+            slot:parts[6],
+            operation:parts[7],
+            time:parts[8],
+            comment:parts[9]
+        });
     }
 
     if(firstDataLine){
@@ -1576,32 +1961,35 @@ document.getElementById("saveLocationsBtn").onclick=function(){
         return;
     }
 
-    if(Object.keys(newLocs).length===0){
-        alert("Nem található menthető rámpaadat.");
+    if(importedRows.length===0){
+        alert("Nem található betölthető, létező ID-jú, On állapotú rámpa. A mentés nem történt meg.");
         return;
     }
 
     /*
-     * A beillesztett rámpák korábbi hozzárendeléseit töröljük.
-     * A listában nem szereplő rámpák hozzárendelései megmaradnak.
+     * Csak azoknak a rámpáknak a korábbi hozzárendelését
+     * cseréljük, amelyekhez az importban On sor tartozik.
      */
+    var importedRampNames={};
+
+    importedRows.forEach(function(row){
+        importedRampNames[row.ramp]=true;
+    });
+
     var existingAssignments=GetAssignments();
 
     var newAssignments=existingAssignments.filter(function(a){
-        var normalizedRamp=String(a.ramp||"").trim().toUpperCase();
-        return !seenRamps[normalizedRamp];
+        var assignedRamp=String(a.ramp||"").trim().toUpperCase();
+        return !importedRampNames[assignedRamp];
     });
 
-    /*
-     * Csak az On státuszú, kamionnal rendelkező sorokból
-     * készül hozzárendelés.
-     */
     importedRows.forEach(function(row){
 
-        if(row.active!=="ON"||!row.truck)return;
+        if(!row.truck)return;
 
         newAssignments.push({
             ramp:row.ramp,
+            rampId:row.rampId,
             truck:row.truck,
             routeType:row.routeType,
             plate:row.plate,
@@ -1621,36 +2009,14 @@ document.getElementById("saveLocationsBtn").onclick=function(){
 
     settingsModal.style.display="none";
 
-    WriteLog("SaveRampLocations("+Object.keys(newLocs).length+")");
+    WriteLog("SaveRampLocations("+importedRows.length+")");
 };
 
 
 
 
-    /* ========================================================
-       STARTUP
-       Üres alaplista, minden rámpa Off állapotban.
-       A régi assignments/history/log nem törlődik.
-       ======================================================== */
 
-    document.getElementById("startupLocationsBtn").onclick=function(){
-        if(!confirm(
-            "A StartUp visszaállítja az eredeti teljes rámpalistát üres adatokkal. "+
-            "Minden rámpa Off állapotba kerül, ezért piros X nem jelenik meg. "+
-            "A korábbi kamion-hozzárendelések, előzmények és naplók nem törlődnek. Folytatod?"
-        )){
-            return;
-        }
 
-        SaveLocationsMap(CreateStartupLocations());
-        SetRampDisplayMode(false);
-        CreateRampOptions();
-        RenderRamps();
-
-        settingsModal.style.display="none";
-
-        WriteLog("StartUp(OriginalRampListEmpty)");
-    };
 
 
     /* ========================================================
@@ -1675,6 +2041,56 @@ document.getElementById("saveLocationsBtn").onclick=function(){
             SaveHistory([]);
             document.getElementById("historyTableBody").innerHTML="";
         }
+    };
+
+    /* A teljes TruckList-[RealTime] előzmény letöltése TXT fájlba. */
+    document.getElementById("downloadHistoryBtn").onclick=function(){
+        var historyItems=GetHistory();
+        var lines=[
+            "Rámpa | Tárhely | Kamion / útvonal | RouteType | Rendszám | Időkapu | Művelet | Comment | Érkezési idő | Távozás ideje | Esemény"
+        ];
+
+        historyItems.forEach(function(item){
+            var info=GetLocationInfo(item.ramp);
+            var routeType=item.routeType||info.routeType||"-";
+
+            lines.push([
+                item.ramp||"-",
+                info.location||"-",
+                item.truck||"-",
+                routeType,
+                item.plate||"-",
+                item.slot||"-",
+                item.operation||"-",
+                item.comment||"-",
+                item.time||"-",
+                item.leftTime||"-",
+                item.eventType||"-"
+            ].join(" | "));
+        });
+
+        var now=new Date();
+        function pad2(value){return String(value).padStart(2,"0");}
+        var dateTime=
+            now.getFullYear()+"-"+
+            pad2(now.getMonth()+1)+"-"+
+            pad2(now.getDate())+"_"+
+            pad2(now.getHours())+"-"+
+            pad2(now.getMinutes())+"-"+
+            pad2(now.getSeconds());
+
+        var blob=new Blob(["\\uFEFF"+lines.join("\\r\\n")],{
+            type:"text/plain;charset=utf-8"
+        });
+        var url=URL.createObjectURL(blob);
+        var a=document.createElement("a");
+
+        a.href=url;
+        a.download="TruckFlow_History_"+dateTime+".txt";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     };
 
 
@@ -1822,39 +2238,69 @@ window.onload=function(){
     SetupModalRampRouteType();
     SetupModals();
 
-    /*
-     * Először betöltjük a rámpalistát.
-     * Ha nincs még lista a Firebase-ben, létrehozzuk az alaplistát
-     * üres adatokkal és Off állapotban.
-     */
-    db.ref("locations").once("value",function(snapshot){
-        var locations=snapshot.val();
+    /* Először a tartós ID-regisztert olvassuk be, hogy újratöltéskor
+       ne kapjon másik számot egyetlen rámpa sem. */
+    db.ref("settings/rampIds").once("value",function(idSnapshot){
+        cachedRampIds=idSnapshot.val()||{};
 
-        if(!locations||Object.keys(locations).length===0){
-            locations=CreateStartupLocations();
-            SaveLocationsMap(locations);
-        }else{
-            cachedLocations=locations;
-        }
+        db.ref("locations").once("value",function(snapshot){
+            var locations=snapshot.val();
 
-        /*
-         * Induláskor a rámpák üresek legyenek.
-         * Az assignments adatok megmaradnak, csak nem jelennek meg.
-         */
-        showAssignmentsOnRamps=false;
-        db.ref("settings/showAssignmentsOnRamps").set(false);
+            if(!locations||Object.keys(locations).length===0){
+                locations=CreateStartupLocations();
+            }
 
-        CreateRampOptions();
-        RenderRamps();
+            var locationMigration=MigrateLocationNames(locations);
+            locations=locationMigration.locations;
+            cachedLocations=EnsureRampIds(locations);
+            SaveRampIds();
+            db.ref("locations").set(cachedLocations);
+
+            /* Induláskor a rámpák üresek legyenek; az assignments megmarad. */
+            showAssignmentsOnRamps=false;
+            db.ref("settings/showAssignmentsOnRamps").set(false);
+
+            CreateRampOptions();
+            RenderRamps();
+        });
     });
 
+/* ========================================================
+   STARTUP - HELYI RÁMPAADATOK KIÜRÍTÉSE
+   FIREBASE MÓDOSÍTÁSA NÉLKÜL
+   ======================================================== */
+
+document.getElementById("startupBtn").onclick = function () {
+
+    if (!confirm("Biztosan kiüríted az összes rámpa megjelenített adatait? A Firebase-ben tárolt adatok nem törlődnek.")) {
+        return;
+    }
+
+// Helyi megjelenítési mód kikapcsolása
+showAssignmentsOnRamps = false;
+
+// Táblázatok újrarajzolása
+RenderRamps();
+
+// A piros X-ek helyi eltüntetése
+document.querySelectorAll(
+    "#xRampTable .delete-btn, #dRampTable .delete-btn"
+).forEach(function (btn) {
+    btn.remove();
+});
+
+};
 
     /* ========================================================
        ASSIGNMENTS REALTIME
        ======================================================== */
 
     db.ref("assignments").on("value",function(snapshot){
-        cachedAssignments=snapshot.val()||[];
+        var migration=MigrateRampReferences(snapshot.val()||[]);
+        cachedAssignments=migration.items;
+        if(migration.changed){
+            db.ref("assignments").set(cachedAssignments);
+        }
         RenderRamps();
     });
 
@@ -1864,7 +2310,11 @@ window.onload=function(){
        ======================================================== */
 
     db.ref("history").on("value",function(snapshot){
-        cachedHistory=snapshot.val()||[];
+        var migration=MigrateRampReferences(snapshot.val()||[]);
+        cachedHistory=migration.items;
+        if(migration.changed){
+            db.ref("history").set(cachedHistory);
+        }
 
         var historyModal=document.getElementById("historyModal");
 
@@ -1887,6 +2337,13 @@ window.onload=function(){
        SHARED RAMP DISPLAY MODE
        ======================================================== */
 
+    db.ref("settings/rampIds").on("value",function(snapshot){
+        cachedRampIds=snapshot.val()||{};
+        CreateRampOptions();
+        RenderRamps();
+    });
+
+
     db.ref("settings/showAssignmentsOnRamps").on("value",function(snapshot){
         var value=snapshot.val();
 
@@ -1901,7 +2358,12 @@ window.onload=function(){
        ======================================================== */
 
     db.ref("locations").on("value",function(snapshot){
-        cachedLocations=snapshot.val()||{};
+        var rawLocations=snapshot.val()||{};
+        var migration=MigrateLocationNames(rawLocations);
+        cachedLocations=EnsureRampIds(migration.locations);
+        if(migration.changed){
+            db.ref("locations").set(cachedLocations);
+        }
 
         CreateRampOptions();
         RenderRamps();
@@ -1912,13 +2374,59 @@ window.onload=function(){
        FRISSÍTÉS GOMBOK
        ======================================================== */
 
-    document.getElementById("xRefreshBtn").onclick=function(){
-        RenderXRamps();
-    };
 
-    document.getElementById("dRefreshBtn").onclick=function(){
-        RenderDRamps();
-    };
+/* ========================================================
+   FRISSÍTÉS - ADATOK ÚJRAOLVASÁSA FIREBASE-BŐL
+   ======================================================== */
+
+document.getElementById("refreshDataBtn").onclick = async function () {
+
+    var refreshBtn = this;
+
+    if (refreshBtn.disabled) return;
+
+    refreshBtn.disabled = true;
+
+    try {
+
+        // A Firebase-adatok újbóli lekérése, írás és törlés nélkül.
+        var results = await Promise.all([
+            db.ref("settings/rampIds").once("value"),
+            db.ref("locations").once("value"),
+            db.ref("assignments").once("value")
+        ]);
+
+        cachedRampIds = results[0].val() || {};
+
+        var locations = results[1].val() || {};
+        var locationMigration = MigrateLocationNames(locations);
+
+        cachedLocations = EnsureRampIds(locationMigration.locations);
+
+        var assignments = results[2].val() || [];
+        var assignmentMigration = MigrateRampReferences(assignments);
+
+        cachedAssignments = assignmentMigration.items;
+
+        // A betöltött kamionadatok megjelenítése helyben.
+        showAssignmentsOnRamps = true;
+
+        CreateRampOptions();
+        RenderRamps();
+
+    } catch (error) {
+
+        console.error("Frissítési hiba:", error);
+
+        alert("Nem sikerült betölteni az adatokat a Firebase-ből.");
+
+    } finally {
+
+        refreshBtn.disabled = false;
+
+    }
+};
+
 };
 </script>
 
