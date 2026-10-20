@@ -54,6 +54,45 @@
     <div class="quick-actions-bar" id="quickActionsBar">
         <button type="button" class="quick-action-btn" id="cityFixCarSetBtn">City Fix Car Set</button>
         <button type="button" class="quick-action-btn" id="cityFixCarSetAllBtn">City Car Fix Set [ALL]</button>
+		
+    <!-- <button type="button" class="quick-action-btn" id="cityFixCarSet1Btn">#1 Import / Export</button>
+    <button type="button" class="quick-action-btn" id="cityFixCarSet2Btn">#2 Import / Export</button>
+    <button type="button" class="quick-action-btn" id="cityFixCarSet3Btn">#3 Import / Export</button>
+    <button type="button" class="quick-action-btn" id="cityFixCarSet4Btn">#4 Import / Export</button>
+    <button type="button" class="quick-action-btn" id="cityFixCarSet5Btn">#5 Import / Export</button>
+    <button type="button" class="quick-action-btn" id="cityFixCarSet6Btn">#6 Import / Export</button>
+    <button type="button" class="quick-action-btn" id="cityFixCarSet7Btn">#7 Import / Export</button>
+    <button type="button" class="quick-action-btn" id="cityFixCarSet8Btn">#8 Import / Export</button>
+    <button type="button" class="quick-action-btn" id="cityFixCarSet9Btn">#9 Import / Export</button>
+    <button type="button" class="quick-action-btn" id="cityFixCarSet10Btn">#10 Import / Export</button>
+	<button type="button" class="quick-action-btn" id="cityFixCarSet11Btn">#11 Import / Export</button>
+	<button type="button" class="quick-action-btn" id="cityFixCarSet12Btn">#12 Import / Export</button>
+	<button type="button" class="quick-action-btn" id="cityFixCarSet13Btn">#13 Import / Export</button> !-->
+	
+    </div>
+	
+	    <!-- Import / Export legördülő lista -->
+    <div class="quick-actions-selector">
+
+        <select id="cityFixCarSetSelect" class="quick-action-select">
+            <option value="">-- Válassz import / export műveletet --</option>
+            <option value="1">#1 Senec-Krakko Imp / Senec Exp — 1 kamion</option>
+            <option value="2">#2 Sosi2 Imp / Sosi1 Exp — 2 konténer</option>
+            <option value="3">#3 GR-BG Imp / Roky2 Exp — 2 konténer</option>
+            <option value="4">#4 AT-Gyor Imp / AT-Gyor Exp — 2 konténer</option>
+            <option value="5">#5 Brno-Gliwice Imp / Brno-Gliwice Exp — 2 ponyvás konténer</option>
+            <option value="6">#6 Roky1-Roky1 Imp / Nupaky-Roky1 Exp — 2 konténer</option>
+            <option value="7">#7 Mönchen-Roky1 Imp / Mönchen-Temesvar2 Exp — 2 konténer</option>
+            <option value="8">#8 RO3 Temesvar-Bukarest Imp / RO3 Temesvar1-Bukarest1 Exp — 2 konténer</option>
+            <option value="9">#9 Giroda (Temesvar) Imp / Üres konténer Exp — 1 marad, 1 üreset visz</option>
+            <option value="10">#10 Verona-Szloven Imp / Verona-Horvat Exp — 1 kamion</option>
+            <option value="11">#11 Cornerado-RO parkoló / Cornerado-Szloven Exp — 2 konténer</option>
+        </select>
+
+        <button type="button" id="cityFixCarSetExecuteBtn" class="quick-action-btn">
+            Let's Go!
+        </button>
+
     </div>
 
     <div class="tables-container">
@@ -261,7 +300,18 @@ d#2;D-02;;;;;;;;;Off</textarea>
     </div>
 </div>
 
-<script src="truckflow.js"></script>
+<!-- <script src="truckflow.js"></script> -->
+
+<script src="01_firebase.js"></script>
+<script src="02_user_security_logs.js"></script>
+<script src="03_firebase_data.js"></script>
+<script src="04_ramp_ids_and_lists.js"></script>
+<script src="05_assignment_modals.js"></script>
+<script src="06_ramp_render.js"></script>
+<script src="07_history.js"></script>
+<script src="08_settings_modals.js"></script>
+<script src="09_startup_listeners.js"></script>
+<script src="10_import_export_captions.js"></script>
 
 </body>
 </html>

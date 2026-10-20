@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="truckflow-logo.png">
+<link rel="apple-touch-icon" href="truckflow-logo.png">
+<meta name="theme-color" content="#1e1e1e">
+<title>TruckFlow</title>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<link rel="stylesheet" href="truckflow.css">
+</head>
+
+<body>
+
+<div class="header">
+    <div class="header-left">
+        <h1>TruckFlow</h1>
+        <div class="flow-img-container"><img src="flow.jpg" alt="Flow Graphic"></div>
+        <div class="header-left-actions">
+            <button type="button" class="header-btn large-bold-btn" id="openLayoutBtn">LayOut</button>
+            <button type="button" class="header-btn large-bold-btn" id="openHistoryBtn">TruckList-[RealTime]</button>
+            <button type="button" class="header-btn large-bold-btn" id="refreshDataBtn">Frissítés</button>
+            <button type="button" class="header-btn large-bold-btn" id="startupBtn">StartUp</button>
+        </div>
+    </div>
+    <div class="header-right">
+        <div class="header-actions">
+            <button type="button" class="header-btn" id="openSettingsBtn">Location Setting's</button>
+            <button type="button" class="header-btn" id="openLogBtn">EventLogDownLoad-[txt]</button>
+            <button type="button" class="header-btn" id="clearAllDataBtn">ClearAllData</button>
+        </div>
+    </div>
+    <img src="android.jpg" alt="Android" class="android-logo" id="openAndroidModalBtn" title="Kattints a nagyításhoz">
+</div>
+
+<div class="container">
+    <div class="site-container special-ramps-container" style="margin-bottom:10px">
+        <div class="site-header-row"><h2>Külön rámpák</h2></div>
+        <table class="ramp-table">
+            <thead><tr>
+                <th>ID</th><th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th>
+                <th>Rendszám</th><th>Időkapu</th><th>Művelet</th><th>Idő</th><th>Comment</th><th></th>
+            </tr></thead>
+            <tbody id="specialRampTable"></tbody>
+        </table>
+    </div>
+
+    <div class="quick-actions-bar" id="quickActionsBar">
+        <button type="button" class="quick-action-btn" id="cityFixCarSetBtn">City Fix Car Set</button>
+        <button type="button" class="quick-action-btn" id="cityFixCarSetAllBtn">City Car Fix Set [ALL]</button>
+    </div>
+
+    <div class="tables-container">
+        <div class="site-container">
+            <div class="site-header-row"><h2>X-Site rámpák</h2></div>
+            <table class="ramp-table">
+                <thead><tr>
+                    <th>ID</th><th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th>
+                    <th>Rendszám</th><th>Időkapu</th><th>Művelet</th><th>Idő</th><th>Comment</th><th></th>
+                </tr></thead>
+                <tbody id="xRampTable"></tbody>
+            </table>
+        </div>
+
+        <div class="site-container">
+            <div class="site-header-row"><h2>D-Site rámpák</h2></div>
+            <table class="ramp-table">
+                <thead><tr>
+                    <th>ID</th><th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th>
+                    <th>Rendszám</th><th>Időkapu</th><th>Művelet</th><th>Idő</th><th>Comment</th><th></th>
+                </tr></thead>
+                <tbody id="dRampTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="assignmentModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="assignmentModalTitle">Rámpa hozzárendelés</h2>
+            <div class="modal-header-actions"><button type="button" class="close-btn" id="closeAssignmentBtn">X</button></div>
+        </div>
+        <div class="modal-body">
+            <div class="assignment-form">
+                <div class="form-group">
+                    <label for="modalRampSelect" class="required-label">Rámpa *</label>
+                    <select id="modalRampSelect" class="required-input"><option value="">-- Válassz --</option></select>
+                </div>
+                <div class="form-group">
+                    <label for="modalTruckInput" class="required-label">Kamion / útvonal *</label>
+                    <input type="text" id="modalTruckInput" class="required-input" placeholder="Pl. Bekescsaba" maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="modalRouteTypeSelect" class="required-label">RouteType *</label>
+                    <select id="modalRouteTypeSelect" class="required-input">
+                        <option value="">--- Type ---</option>
+                        <option value="CITY FIX">CITY FIX</option>
+                        <option value="CITY-Belföld">CITY-Belföld</option>
+                        <option value="CITY-Külföld">CITY-Külföld</option>
+                        <option value="DEPO-Belföld">DEPO-Belföld</option>
+                        <option value="DEPO-Külföld">DEPO-Külföld</option>
+                        <option value="ManiFest-Belföld">ManiFest-Belföld</option>
+                        <option value="ManiFest-Külföld">ManiFest-Külföld</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modalPlateInput">Rendszám</label>
+                    <input type="text" id="modalPlateInput" placeholder="Pl. AA123BB" maxlength="15">
+                </div>
+                <div class="form-group">
+                    <label for="modalSlotInput">Időkapu</label>
+                    <input type="text" id="modalSlotInput" placeholder="Pl. 10:00" maxlength="5">
+                </div>
+                <div class="form-group">
+                    <label for="modalOperationSelect" class="required-label">Művelet *</label>
+                    <select id="modalOperationSelect" class="required-input">
+                        <option value="">--- Process ---</option>
+                        <option value="Leszedés">Leszedés</option>
+                        <option value="Felpakolás">Felpakolás</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label for="modalCommentInput">Comment</label>
+                    <input type="text" id="modalCommentInput" placeholder="Pl. Rakodás kész" maxlength="50">
+                </div>
+                <div class="form-group full-width">
+                    <label for="modalMoveRampSelect">Move cél rámpa</label>
+                    <select id="modalMoveRampSelect"><option value="">-- Válaszd ki a cél rámpát --</option></select>
+                </div>
+                <div id="assignmentMessage" class="assignment-message"></div>
+                <div class="assignment-buttons">
+                    <button type="button" class="assignment-cancel-btn" id="cancelAssignmentBtn">Mégse</button>
+                    <button type="button" class="assignment-add-btn" id="modalAssignBtn">Hozzáadás</button>
+                    <button type="button" class="assignment-move-btn" id="modalMoveBtn">Move</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="settingsModal">
+    <div class="modal-content" style="width:1200px;max-width:95%">
+        <div class="modal-header">
+            <h2>Rámpákhoz tartozó tárhelyek szerkesztése</h2>
+            <div class="modal-header-actions"><button type="button" class="close-btn" id="closeSettingsBtn">X</button></div>
+        </div>
+        <div class="modal-body" style="padding:10px">
+            <p style="font-size:12px;color:#555;margin-top:0">
+                Illeszd be a teljes rámpalistát pontosvesszővel (<code>;</code>) elválasztva.
+                Az első sor a fejléc, ezt a rendszer nem tölti be. A sorrend és a 10 oszlop kötelező.
+                Az Active/Inactive oszlopban <b>On</b> = aktív, <b>Off</b> = inaktív.
+                A Kamion / útvonal, Rendszám, Időkapu, Művelet és Idő oszlop csak a lista formátumához kell;
+                ezekből a Mentés nem hoz létre kamion-hozzárendelést.
+            </p>
+            <textarea id="locationsTextarea" spellcheck="false" style="width:100%;height:300px;padding:8px;font-family:monospace;font-size:12px;border:1px solid #ccc;border-radius:4px;resize:vertical;"></textarea>
+            <div class="location-settings-buttons">
+                <button type="button" id="saveLocationsBtn" class="location-save-btn">Mentés</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- City Car Fix Set [ALL] modal -->
+<div class="modal-overlay" id="cityFixCarSetAllModal">
+    <div class="modal-content" style="width:1200px;max-width:95%">
+        <div class="modal-header">
+            <h2>City Car Fix Set [ALL] – Rámpák megadása</h2>
+            <div class="modal-header-actions">
+                <button type="button" class="close-btn" id="closeCityFixCarSetAllBtn">X</button>
+            </div>
+        </div>
+        <div class="modal-body" style="padding:10px">
+            <p style="font-size:12px;color:#555;margin-top:0">
+                Illeszd be a rámpalistát pontosvesszővel (<code>;</code>) elválasztva.
+                Az első sor a fejléc, ezt a rendszer nem tölti be.
+                A rámpákat az <b>Id</b> oszlop alapján azonosítja.
+                A <b>Write</b> gomb a megadott ID-khoz tartozó rámpákra írja a City Fix adatokat.
+            </p>
+            <textarea
+<textarea id="cityFixCarSetAllTextarea">Id;Rámpa;Tárhely;Kamion / útvonal;RouteType;Rendszám;Időkapu;Művelet;Idő;Comment;Active/Inactive
+d#1;D-01;;;;;;;;;Off
+d#2;D-02;;;;;;;;;Off</textarea>
+            <div id="cityFixCarSetAllMessage" class="assignment-message"></div>
+            <div class="location-settings-buttons">
+                <button type="button" id="cityFixCarSetAllWriteBtn" class="location-save-btn">Write</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="historyModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Elhagyott / Távozott autók előzményei</h2>
+            <div class="modal-header-actions">
+                <button type="button" id="downloadHistoryBtn">HistoryDownLoad</button>
+                <button type="button" class="danger-btn" id="clearHistoryBtn">Lista ürítése</button>
+                <button type="button" class="close-btn" id="closeHistoryBtn">X</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <table class="ramp-table">
+                <thead><tr>
+                    <th>Rámpa</th><th>Tárhely</th><th>Kamion / útvonal</th><th>RouteType</th><th>Rendszám</th>
+                    <th>Időkapu</th><th>Művelet</th><th>Comment</th><th>Érkezési idő</th><th>Távozás ideje</th><th>Esemény</th>
+                </tr></thead>
+                <tbody id="historyTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="logModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>log txt tartalom</h2>
+            <div class="modal-header-actions">
+                <button type="button" id="downloadLogBtn">Log.txt letöltése</button>
+                <button type="button" class="danger-btn" id="clearLogBtn">Napló törlése</button>
+                <button type="button" class="close-btn" id="closeLogBtn">X</button>
+            </div>
+        </div>
+        <div class="modal-body">
+            <table class="ramp-table">
+                <thead><tr><th>#RowId</th><th>UserName</th><th>DateTime</th><th>Evet()</th></tr></thead>
+                <tbody id="logTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="layoutModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>LayOut</h2>
+            <div class="modal-header-actions"><button type="button" class="close-btn" id="closeLayoutBtn">X</button></div>
+        </div>
+        <div class="modal-body" style="text-align:center;padding:10px">
+            <img src="WH_LayOut.png" alt="LayOut" style="max-width:100%;height:auto;display:block;margin:0 auto;border-radius:4px">
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="androidModal">
+    <div class="modal-content" style="width:auto;max-width:90vw">
+        <div class="modal-header">
+            <h2>DevelopedBy</h2>
+            <div class="modal-header-actions"><button type="button" class="close-btn" id="closeAndroidModalBtn">X</button></div>
+        </div>
+        <div class="modal-body" style="text-align:center;padding:15px">
+            <img src="android.jpg" alt="Android Nagyítva" style="max-width:100%;max-height:70vh;object-fit:contain;border-radius:4px">
+        </div>
+    </div>
+</div>
+
+<script src="truckflow.js"></script>
+
+</body>
+</html>

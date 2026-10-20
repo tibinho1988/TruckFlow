@@ -1,45 +1,286 @@
-*{box-sizing:border-box}
-body{margin:0;padding:0;font-family:Arial,sans-serif;background-color:#ffe5cc;color:#222}
-.header{background-color:#1f2937;color:white;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;position:relative}
-.header-left{display:flex;align-items:center;gap:15px}
-.header h1{margin:0;font-size:24px}
-.flow-img-container{height:40px;width:160px}
-.flow-img-container img{width:100%;height:100%;object-fit:fill;border-radius:4px;display:block}
-.header-left-actions{display:flex;gap:10px;align-items:center;margin-left:10px}
-.large-bold-btn{font-size:15px!important;font-weight:bold!important;padding:8px 14px!important}
-.header-right{display:flex;align-items:center;padding-right:50px}
-.header-actions{display:flex;gap:10px;align-items:center}
-.header-btn{background-color:#3b82f6;color:white;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:13px}
-.header-btn:hover{background-color:#2563eb}
-#openLayoutBtn{background-color:#166534;color:white}
-#openLayoutBtn:hover{background-color:#14532d}
-#clearAllDataBtn{background-color:#facc15;color:#dc2626;font-weight:bold;border:1px solid #ca8a04}
-#clearAllDataBtn:hover{background-color:#eab308}
-.android-logo{position:absolute;right:15px;top:50%;transform:translateY(-50%);height:34px;width:34px;object-fit:contain;border-radius:4px;cursor:pointer;transition:transform .2s}
-.android-logo:hover{transform:translateY(-50%) scale(1.1)}
-.container{max-width:1700px;margin:10px auto;padding:0 10px}
-.tables-container{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.special-ramps-container{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.special-ramps-container .ramp-table{min-width:900px}
-.quick-actions-bar{
-    display:flex;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:8px;
-    margin:0 0 10px;
-    padding:0 2px;
+```css
+/* ============================================================
+   ALAPBEÁLLÍTÁSOK
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
 }
 
-.quick-action-btn{
-    background-color:#a855f7;
-    color:#ffffff;
-    border:1px solid #7e22ce;
-    border-radius:4px;
-    padding:9px 14px;
-    font-size:13px;
-    font-weight:bold;
-    cursor:pointer;
+html {
+    scroll-behavior: smooth;
 }
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #ffe5cc;
+    color: #222;
+}
+
+/* ============================================================
+   FEJLÉC
+   ============================================================ */
+
+.header {
+    background-color: #1f2937;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.flow-img-container {
+    height: 40px;
+    width: 160px;
+}
+
+.flow-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    border-radius: 5px;
+    display: block;
+}
+
+.header-left-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.large-bold-btn {
+    font-size: 15px !important;
+    font-weight: bold !important;
+    padding: 8px 14px !important;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    padding-right: 50px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.header-btn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background-color 0.2s, transform 0.15s;
+}
+
+.header-btn:hover {
+    background-color: #2563eb;
+}
+
+.header-btn:active,
+.quick-action-btn:active {
+    transform: translateY(1px);
+}
+
+#openLayoutBtn {
+    background-color: #166534;
+    color: white;
+}
+
+#openLayoutBtn:hover {
+    background-color: #14532d;
+}
+
+#clearAllDataBtn {
+    background-color: #facc15;
+    color: #dc2626;
+    font-weight: bold;
+    border: 1px solid #ca8a04;
+}
+
+#clearAllDataBtn:hover {
+    background-color: #eab308;
+}
+
+.android-logo {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 34px;
+    width: 34px;
+    object-fit: contain;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.android-logo:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* ============================================================
+   FŐ ELRENDEZÉS
+   ============================================================ */
+
+.container {
+    max-width: 1700px;
+    margin: 14px auto;
+    padding: 0 12px;
+}
+
+.tables-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.special-ramps-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.special-ramps-container .ramp-table {
+    min-width: 900px;
+}
+
+/* ============================================================
+   CITY CAR FIX SET – GYORSMŰVELETEK
+   A két meglévő gomb felül marad.
+   A legördülő lista és a végrehajtás alatta jelenik meg.
+   ============================================================ */
+
+.quick-actions-bar {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    margin: 0 0 30px;
+    padding: 10px;
+    background: #fffaf5;
+    border: 1px solid #e7cdb5;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(31, 41, 55, 0.08);
+}
+
+/* A két meglévő felső gomb konténere */
+
+.quick-actions-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 10px;
+}
+
+/* Általános gyorsgombok */
+
+.quick-action-btn {
+    background-color: #9333ea;
+    color: #ffffff;
+    border: 1px solid #7e22ce;
+    border-radius: 7px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+
+.quick-action-btn:hover {
+    background-color: #7e22ce;
+    box-shadow: 0 2px 5px rgba(126, 34, 206, 0.2);
+}
+
+/* City Car Fix Set [ALL] */
+
+#cityFixCarSetAllBtn {
+    background-color: #0891b2;
+    color: #ffffff;
+    border: 1px solid #0e7490;
+}
+
+#cityFixCarSetAllBtn:hover {
+    background-color: #0e7490;
+}
+
+/* Legördülő lista és végrehajtás gomb közös sora */
+
+.quick-actions-selector {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+    width: 100%;
+}
+
+/* Legördülő lista */
+
+.quick-action-select {
+    flex: 1;
+    min-width: 0;
+    min-height: 56px;
+    padding: 14px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #1f2937;
+    font-size: 16px;
+    font-weight: 600;
+    box-sizing: border-box;
+    cursor: pointer;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.quick-action-select:focus {
+    outline: 2px solid #93c5fd;
+    outline-offset: 1px;
+    border-color: #2563eb;
+}
+
+/* Végrehajtás – zöld gomb */
+
+#cityFixCarSetExecuteBtn {
+    flex-shrink: 0;
+    min-height: 56px;
+    padding: 12px 24px;
+    background-color: #16a34a;
+    color: #ffffff;
+    border: 1px solid #15803d;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+#cityFixCarSetExecuteBtn:hover {
+    background-color: #15803d;
+    box-shadow: 0 2px 5px rgba(22, 163, 74, 0.2);
+}
+
+/* City Car Fix Set [ALL] textarea */
 
 #cityFixCarSetAllTextarea {
     width: 100%;
@@ -52,134 +293,818 @@ body{margin:0;padding:0;font-family:Arial,sans-serif;background-color:#ffe5cc;co
     line-height: 1.5;
     padding: 12px;
 }
-.quick-action-btn:hover{
-    background-color:#9333ea;
+
+/* ============================================================
+   SITE KÁRTYÁK
+   ============================================================ */
+
+.site-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 2px 7px rgba(31, 41, 55, 0.08);
+    border: 1px solid #93c5fd;
+    min-width: 0;
 }
 
-/* City Car Fix Set [ALL] – külön szín */
-#cityFixCarSetAllBtn{
-    background-color:#0891b2;
-    color:#ffffff;
-    border:1px solid #0e7490;
+.site-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #2563eb;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
 }
 
-#cityFixCarSetAllBtn:hover{
-    background-color:#0e7490;
+.site-container h2 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 16px;
+    border: none;
+    padding: 0;
 }
-.site-container{background-color:white;border-radius:6px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid #93c5fd}
-.site-header-row{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2563eb;padding-bottom:4px;margin-bottom:6px}
-.site-container h2{margin:0;color:#1f2937;font-size:16px;border:none;padding:0}
-.refresh-btn{background-color:#4b5563;height:26px;padding:0 8px;font-size:11px}
-.refresh-btn:hover{background-color:#374151}
-.ramp-table{width:100%;border-collapse:collapse}
-.ramp-table th{background-color:#e5e7eb;padding:4px 6px;text-align:left;font-size:11px;position:sticky;top:0;z-index:1}
-.ramp-table td{padding:4px 6px;border-bottom:1px solid #eee;font-size:11px}
-.ramp-clickable{cursor:pointer}
-.ramp-clickable:hover{filter:brightness(.95);outline:2px solid #60a5fa;outline-offset:-2px}
-.occupied{font-weight:bold}
-.free{color:#777}
-.route-city-fix{background-color:#fecaca!important}
-.route-city{background-color:#bfdbfe!important}
-.route-manifest{background-color:#bbf7d0!important}
-.route-depo{background-color:#fef08a!important}
-.route-other{background-color:white!important}
-.delete-btn{height:22px;padding:0 5px;background-color:#dc2626;font-size:11px;font-weight:bold;width:25px;cursor:pointer;color:white;border:0;border-radius:3px}
-.delete-btn:hover{background-color:#b91c1c}
-.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.5);z-index:1000;justify-content:center;align-items:center}
-.modal-content{background-color:white;border-radius:8px;width:1100px;max-width:95%;max-height:85vh;display:flex;flex-direction:column;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,.15);border:1px solid #93c5fd}
-.modal-header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #e5e7eb;padding-bottom:10px;margin-bottom:15px}
-.modal-header h2{margin:0;font-size:20px;color:#1f2937}
-.modal-header-actions{display:flex;gap:10px;align-items:center}
-.danger-btn{background-color:#facc15;color:#1d4ed8;height:30px;padding:0 12px;font-size:13px;font-weight:bold;border:0;border-radius:4px;cursor:pointer}
-.danger-btn:hover{background-color:#eab308}
-#downloadLogBtn{background-color:#005a9e;color:white;height:30px;padding:0 12px;font-size:13px;border:0;border-radius:4px;cursor:pointer}
-#downloadLogBtn:hover{background-color:#004578}
-#downloadHistoryBtn{background-color:#2563eb;color:white;height:30px;padding:0 12px;font-size:13px;font-weight:bold;border:1px solid #1d4ed8;border-radius:4px;cursor:pointer}
-#downloadHistoryBtn:hover{background-color:#1d4ed8}
-.close-btn{background-color:#dc2626;color:white;height:30px;width:35px;padding:0;font-size:14px;font-weight:bold;display:flex;justify-content:center;align-items:center;border:0;border-radius:4px;cursor:pointer}
-.close-btn:hover{background-color:#b91c1c}
-.modal-body{overflow-y:auto;flex-grow:1}
-#assignmentModal .modal-content{width:650px;max-width:95%;max-height:none}
-#assignmentModal .modal-header{margin-bottom:12px}
-#assignmentModal .modal-header h2{font-size:18px}
-.assignment-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.assignment-form .form-group{display:flex;flex-direction:column}
-.assignment-form .form-group.full-width{grid-column:1/-1}
-.assignment-form label{margin-bottom:3px;font-weight:bold;font-size:11px}
-.required-label{color:#2563eb!important}
-.required-input{background-color:#fef08a!important;color:#1e3a8a!important;font-weight:bold}
-.required-input option{background-color:white;color:#222}
-input,select{width:100%;height:36px;padding:4px 6px;border:1px solid #ccc;border-radius:4px;font-size:13px;background-color:white}
-.assignment-buttons{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:5px}
-.assignment-add-btn{background-color:#166534;color:white;min-width:110px;height:36px;font-weight:bold;border:0;border-radius:4px;cursor:pointer}
-.assignment-add-btn:hover{background-color:#14532d}
-.assignment-move-btn{background-color:#2563eb;color:white;min-width:90px;height:36px;font-weight:bold;border:0;border-radius:4px;cursor:pointer}
-.assignment-move-btn:hover{background-color:#1d4ed8}
-.assignment-cancel-btn{background-color:#6b7280;color:white;min-width:90px;height:36px;border:0;border-radius:4px;cursor:pointer}
-.assignment-cancel-btn:hover{background-color:#4b5563}
-.assignment-message{grid-column:1/-1;min-height:18px;color:#dc2626;font-size:12px;font-weight:bold}
-.location-settings-buttons{margin-top:10px;display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px}
-.location-startup-btn,.location-save-btn{min-height:36px;padding:0 16px;border:0;border-radius:4px;color:white;font-weight:bold;cursor:pointer}
-.location-startup-btn{background-color:#2563eb}
-.location-startup-btn:hover{background-color:#1d4ed8}
-.location-save-btn{background-color:#166534}
-.location-save-btn:hover{background-color:#14532d}
 
-@media(max-width:1300px){.tables-container{grid-template-columns:1fr}}
-@media(max-width:700px){
-html,body{width:100%;min-width:0;overflow-x:hidden}
-body{font-size:14px}
-.header{padding:8px 10px;display:flex;flex-wrap:wrap;gap:8px}
-.header-left{width:100%;display:flex;flex-wrap:wrap;gap:8px;padding-right:38px}
-.header h1{font-size:20px;line-height:32px}
-.flow-img-container{width:110px;height:32px}
-.header-left-actions{width:100%;margin-left:0;gap:6px}
-.header-left-actions .large-bold-btn{flex:1;min-width:0;font-size:12px!important;padding:7px 5px!important}
-.header-right{width:100%;padding-right:0}
-.header-actions{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.header-actions .header-btn{width:100%;min-width:0;font-size:11px;padding:6px 4px}
-#clearAllDataBtn{grid-column:1/-1}
-.android-logo{right:8px;top:20px;width:30px;height:30px}
-.container{width:100%;max-width:none;margin:6px 0;padding:0 6px}
-.tables-container{grid-template-columns:1fr;gap:8px}
-.site-container{padding:7px;width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.site-header-row{padding-bottom:5px;margin-bottom:5px}
-.site-container h2{font-size:15px}
-.refresh-btn{height:28px;font-size:11px;padding:0 8px}
-.ramp-table{min-width:900px}
-.ramp-table th,.ramp-table td{white-space:nowrap;font-size:11px;padding:5px 6px}
-#assignmentModal .modal-content{width:calc(100vw - 16px)!important;max-width:calc(100vw - 16px);padding:10px;border-radius:7px}
-#assignmentModal .modal-header{padding-bottom:8px;margin-bottom:10px}
-#assignmentModal .modal-header h2{font-size:16px;line-height:20px}
-.assignment-form{grid-template-columns:1fr}
-.assignment-form .form-group.full-width{grid-column:auto}
-.assignment-buttons{grid-column:auto;display:grid;grid-template-columns:1fr 1fr;margin-top:4px}
-.assignment-add-btn,.assignment-move-btn,.assignment-cancel-btn{width:100%}
-.assignment-form label{font-size:11px}
-input,select{height:38px;font-size:13px}
-.modal-content{width:calc(100vw - 16px)!important;max-width:calc(100vw - 16px);max-height:92vh;padding:10px;border-radius:7px}
-.modal-header{padding-bottom:8px;margin-bottom:8px;gap:6px}
-.modal-header h2{font-size:16px;line-height:20px}
-.modal-header-actions{gap:5px;flex-shrink:0}
-.modal-header-actions button{font-size:11px}
-.close-btn{width:32px;height:30px}
-.danger-btn,#downloadLogBtn,#downloadHistoryBtn{height:30px;padding:0 7px;font-size:10px}
-.modal-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.modal-body .ramp-table{min-width:950px}
-#locationsTextarea{width:100%!important;height:300px!important;font-size:12px!important}
-#layoutModal .modal-body{overflow-y:auto;overflow-x:hidden}
-#layoutModal img{width:100%;height:auto}
-#androidModal .modal-content{padding:8px}
-#historyModal .modal-header,#logModal .modal-header{align-items:flex-start}
+.refresh-btn {
+    background-color: #4b5563;
+    color: white;
+    height: 28px;
+    padding: 0 10px;
+    font-size: 11px;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
 }
-@media(max-width:400px){
-.header h1{font-size:18px}
-.flow-img-container{width:95px}
-.header-left-actions .large-bold-btn{font-size:11px!important}
-.header-actions{grid-template-columns:1fr}
-#clearAllDataBtn{grid-column:auto}
-#assignmentModal .modal-header h2{font-size:14px}
-.assignment-buttons{grid-template-columns:1fr}
+
+.refresh-btn:hover {
+    background-color: #374151;
 }
-#refreshDataBtn{background-color:#16a34a;color:white;border:1px solid #15803d}
-#refreshDataBtn:hover{background-color:#15803d}
+
+#refreshDataBtn {
+    background-color: #16a34a;
+    color: white;
+    border: 1px solid #15803d;
+}
+
+#refreshDataBtn:hover {
+    background-color: #15803d;
+}
+
+/* ============================================================
+   RÁMPATÁBLÁZATOK
+   ============================================================ */
+
+.ramp-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ramp-table th {
+    background-color: #e5e7eb;
+    padding: 6px;
+    text-align: left;
+    font-size: 11px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 1px solid #d1d5db;
+}
+
+.ramp-table td {
+    padding: 5px 6px;
+    border-bottom: 1px solid #eee;
+    font-size: 11px;
+}
+
+.ramp-clickable {
+    cursor: pointer;
+}
+
+.ramp-clickable:hover {
+    filter: brightness(0.95);
+    outline: 2px solid #60a5fa;
+    outline-offset: -2px;
+}
+
+.occupied {
+    font-weight: bold;
+}
+
+.free {
+    color: #777;
+}
+
+/* Útvonaltípusok – az eredeti színkódok megmaradnak */
+
+.route-city-fix {
+    background-color: #fecaca !important;
+}
+
+.route-city {
+    background-color: #bfdbfe !important;
+}
+
+.route-manifest {
+    background-color: #bbf7d0 !important;
+}
+
+.route-depo {
+    background-color: #fef08a !important;
+}
+
+.route-other {
+    background-color: #ffffff !important;
+}
+
+/* Törlés gomb */
+
+.delete-btn {
+    height: 24px;
+    padding: 0 5px;
+    background-color: #dc2626;
+    font-size: 11px;
+    font-weight: bold;
+    width: 25px;
+    cursor: pointer;
+    color: white;
+    border: 0;
+    border-radius: 4px;
+}
+
+.delete-btn:hover {
+    background-color: #b91c1c;
+}
+
+/* ============================================================
+   MODÁLOK – ALAP
+   ============================================================ */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.58);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    border-radius: 10px;
+    width: 1300px;
+    max-width: 100%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    border: 1px solid #93c5fd;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #1f2937;
+}
+
+.modal-header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.modal-body {
+    overflow-y: auto;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+/* ============================================================
+   NAPLÓ- ÉS ELŐZMÉNYGOMBOK
+   ============================================================ */
+
+.danger-btn {
+    background-color: #facc15;
+    color: #1d4ed8;
+    height: 30px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: bold;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.danger-btn:hover {
+    background-color: #eab308;
+}
+
+#downloadLogBtn {
+    background-color: #005a9e;
+    color: white;
+    height: 30px;
+    padding: 0 12px;
+    font-size: 13px;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#downloadLogBtn:hover {
+    background-color: #004578;
+}
+
+#downloadHistoryBtn {
+    background-color: #2563eb;
+    color: white;
+    height: 30px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: bold;
+    border: 1px solid #1d4ed8;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#downloadHistoryBtn:hover {
+    background-color: #1d4ed8;
+}
+
+.close-btn {
+    background-color: #dc2626;
+    color: white;
+    height: 30px;
+    width: 35px;
+    padding: 0;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    background-color: #b91c1c;
+}
+
+/* ============================================================
+   RÁMPAHOZZÁRENDELÉSI MODÁL
+   ============================================================ */
+
+#assignmentModal .modal-content {
+    width: 1000px;
+    max-width: 95%;
+    max-height: 90vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+#assignmentModal .modal-content * {
+    box-sizing: border-box;
+}
+
+#assignmentModal input,
+#assignmentModal select,
+#assignmentModal textarea {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+#assignmentModal .modal-content form,
+#assignmentModal .modal-content .form-group {
+    min-width: 0;
+    max-width: 100%;
+}
+
+#assignmentModal .modal-header {
+    margin-bottom: 12px;
+}
+
+#assignmentModal .modal-header h2 {
+    font-size: 18px;
+}
+
+.assignment-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.assignment-form .form-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.assignment-form .form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.assignment-form label {
+    margin-bottom: 4px;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.required-label {
+    color: #2563eb !important;
+}
+
+.required-input {
+    background-color: #fef08a !important;
+    color: #1e3a8a !important;
+    font-weight: bold;
+}
+
+.required-input option {
+    background-color: white;
+    color: #222;
+}
+
+/* Űrlapmezők */
+
+input,
+select {
+    width: 100%;
+    height: 36px;
+    padding: 4px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    font-size: 13px;
+    background-color: white;
+    color: #222;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid #93c5fd;
+    outline-offset: 1px;
+    border-color: #2563eb;
+}
+
+/* Hozzárendelési műveletgombok */
+
+.assignment-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.assignment-add-btn {
+    background-color: #166534;
+    color: white;
+    min-width: 110px;
+    height: 36px;
+    font-weight: bold;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.assignment-add-btn:hover {
+    background-color: #14532d;
+}
+
+.assignment-move-btn {
+    background-color: #2563eb;
+    color: white;
+    min-width: 90px;
+    height: 36px;
+    font-weight: bold;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.assignment-move-btn:hover {
+    background-color: #1d4ed8;
+}
+
+.assignment-cancel-btn {
+    background-color: #6b7280;
+    color: white;
+    min-width: 90px;
+    height: 36px;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.assignment-cancel-btn:hover {
+    background-color: #4b5563;
+}
+
+.assignment-message {
+    grid-column: 1 / -1;
+    min-height: 18px;
+    color: #dc2626;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ============================================================
+   HELYSZÍNBEÁLLÍTÁSOK
+   ============================================================ */
+
+.location-settings-buttons {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.location-startup-btn,
+.location-save-btn {
+    min-height: 36px;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.location-startup-btn {
+    background-color: #2563eb;
+}
+
+.location-startup-btn:hover {
+    background-color: #1d4ed8;
+}
+
+.location-save-btn {
+    background-color: #166534;
+}
+
+.location-save-btn:hover {
+    background-color: #14532d;
+}
+
+/* ============================================================
+   TÁBLÁZATOK – KÖZEPES KÉPERNYŐ
+   ============================================================ */
+
+@media (max-width: 1300px) {
+    .tables-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   MOBILNÉZET
+   ============================================================ */
+
+@media (max-width: 700px) {
+    html,
+    body {
+        width: 100%;
+        min-width: 0;
+        overflow-x: hidden;
+    }
+
+    body {
+        font-size: 14px;
+    }
+
+    .header {
+        padding: 8px 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .header-left {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding-right: 38px;
+    }
+
+    .header h1 {
+        font-size: 20px;
+        line-height: 32px;
+    }
+
+    .flow-img-container {
+        width: 110px;
+        height: 32px;
+    }
+
+    .header-left-actions {
+        width: 100%;
+        margin-left: 0;
+        gap: 6px;
+    }
+
+    .header-left-actions .large-bold-btn {
+        flex: 1;
+        min-width: 0;
+        font-size: 12px !important;
+        padding: 7px 5px !important;
+    }
+
+    .header-right {
+        width: 100%;
+        padding-right: 0;
+    }
+
+    .header-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+    }
+
+    .header-actions .header-btn {
+        width: 100%;
+        min-width: 0;
+        font-size: 11px;
+        padding: 7px 4px;
+    }
+
+    #clearAllDataBtn {
+        grid-column: 1 / -1;
+    }
+
+    .android-logo {
+        right: 8px;
+        top: 20px;
+        width: 30px;
+        height: 30px;
+    }
+
+    .container {
+        width: 100%;
+        max-width: none;
+        margin: 8px 0;
+        padding: 0 6px;
+    }
+
+    .tables-container {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    /* City Car Fix – mobil */
+    #quickActionsBar {
+        padding: 8px;
+        gap: 10px;
+    }
+
+    .quick-actions-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .quick-actions-buttons .quick-action-btn {
+        width: 100%;
+        min-width: 0;
+        padding: 10px 6px;
+        font-size: 12px;
+    }
+
+    .quick-actions-selector {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .quick-action-select {
+        width: 100%;
+        min-height: 54px;
+        font-size: 14px;
+    }
+
+    #cityFixCarSetExecuteBtn {
+        width: 100%;
+        min-height: 50px;
+    }
+
+    /* Site kártyák */
+    .site-container {
+        padding: 7px;
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .site-header-row {
+        padding-bottom: 5px;
+        margin-bottom: 5px;
+    }
+
+    .site-container h2 {
+        font-size: 15px;
+    }
+
+    .refresh-btn {
+        height: 28px;
+        font-size: 11px;
+        padding: 0 8px;
+    }
+
+    /* Rámpatáblák vízszintes görgetéssel */
+    .ramp-table {
+        min-width: 900px;
+    }
+
+    .ramp-table th,
+    .ramp-table td {
+        white-space: nowrap;
+        font-size: 11px;
+        padding: 5px 6px;
+    }
+
+    /* Hozzárendelési modál */
+    #assignmentModal .modal-content {
+        width: calc(100vw - 16px) !important;
+        max-width: calc(100vw - 16px);
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    #assignmentModal .modal-header {
+        padding-bottom: 8px;
+        margin-bottom: 10px;
+    }
+
+    #assignmentModal .modal-header h2 {
+        font-size: 16px;
+        line-height: 20px;
+    }
+
+    .assignment-form {
+        grid-template-columns: 1fr;
+    }
+
+    .assignment-form .form-group.full-width {
+        grid-column: auto;
+    }
+
+    .assignment-buttons {
+        grid-column: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin-top: 4px;
+    }
+
+    .assignment-add-btn,
+    .assignment-move-btn,
+    .assignment-cancel-btn {
+        width: 100%;
+    }
+
+    .assignment-form label {
+        font-size: 11px;
+    }
+
+    input,
+    select {
+        height: 38px;
+        font-size: 13px;
+    }
+
+    /* Általános modálok */
+    .modal-content {
+        width: calc(100vw - 16px) !important;
+        max-width: calc(100vw - 16px);
+        max-height: 92vh;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .modal-header {
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+        gap: 6px;
+    }
+
+    .modal-header h2 {
+        font-size: 16px;
+        line-height: 20px;
+    }
+
+    .modal-header-actions {
+        gap: 5px;
+        flex-shrink: 0;
+    }
+
+    .modal-header-actions button {
+        font-size: 11px;
+    }
+
+    .close-btn {
+        width: 32px;
+        height: 30px;
+    }
+
+    .danger-btn,
+    #downloadLogBtn,
+    #downloadHistoryBtn {
+        height: 30px;
+        padding: 0 7px;
+        font-size: 10px;
+    }
+
+    .modal-body {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .modal-body .ramp-table {
+        min-width: 950px;
+    }
+
+    #locationsTextarea {
+        width: 100% !important;
+        height: 300px !important;
+        font-size: 12px !important;
+    }
+
+    #layoutModal .modal-body {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    #layoutModal img {
+        width: 100%;
+        height: auto;
+    }
+
+    #androidModal .modal-content {
+        padding: 8px;
+    }
+
+    #historyModal .modal-header,
+    #logModal .modal-header {
+        align-items: flex-start;
+    }
+}
+
+/* ============================================================
+   KIS MOBILKÉPERNYŐK
+   ============================================================ */
+
+@media (max-width: 400px) {
+    .header h1 {
+        font-size: 18px;
+    }
+
+    .flow-img-container {
+        width: 95px;
+    }
+
+    .header-left-actions .large-bold-btn {
+        font-size: 11px !important;
+    }
+
+    .header-actions {
+        grid-template-columns: 1fr;
+    }
+
+    #clearAllDataBtn {
+        grid-column: auto;
+    }
+
+    #assignmentModal .modal-header h2 {
+        font-size: 14px;
+    }
+
+    .assignment-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions-buttons {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Térköz a legördülő lista és az X-Site / D-Site rámpalisták között */
+.quick-actions-selector {
+    margin-bottom: 30px !important;
+}

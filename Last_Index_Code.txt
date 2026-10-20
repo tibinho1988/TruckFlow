@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TruckFlow</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            color: #222;
+        }
+        .header {
+            background-color: #1f2937;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .header-btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .header-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .container {
+            max-width: 1700px;
+            margin: 10px auto;
+            padding: 0 10px;
+        }
+        
+        /* ŰRLAPOK EGYMÁS MELLETT */
+        .forms-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 6px;
+            padding: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .card h2 {
+            margin-top: 0;
+            font-size: 16px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 4px;
+            color: #1f2937;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 90px 1fr 1fr 1fr 110px 100px;
+            gap: 6px;
+            align-items: end;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            margin-bottom: 2px;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        input, select {
+            width: 100%;
+            height: 32px;
+            padding: 4px 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 12px;
+            background-color: white;
+        }
+        button {
+            height: 32px;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            background-color: #2563eb;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        .message {
+            margin-top: 4px;
+            font-weight: bold;
+            font-size: 11px;
+            min-height: 14px;
+            color: #dc2626;
+        }
+
+        /* TÁBLÁZATOK EGYMÁS MELLETT */
+        .tables-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .site-container {
+            background-color: white;
+            border-radius: 6px;
+            padding: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        .site-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 4px;
+            margin-bottom: 6px;
+        }
+        .site-container h2 {
+            margin: 0;
+            color: #1f2937;
+            font-size: 16px;
+            border: none;
+            padding: 0;
+        }
+        .refresh-btn {
+            background-color: #4b5563;
+            height: 26px;
+            padding: 0 8px;
+            font-size: 11px;
+        }
+        .refresh-btn:hover {
+            background-color: #374151;
+        }
+
+        .ramp-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .ramp-table th {
+            background-color: #e5e7eb;
+            padding: 4px 6px;
+            text-align: left;
+            font-size: 11px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .ramp-table td {
+            padding: 4px 6px;
+            border-bottom: 1px solid #eee;
+            font-size: 11px;
+        }
+        .occupied {
+            font-weight: bold;
+        }
+        .free {
+            color: #777;
+        }
+        .delete-btn {
+            height: 22px;
+            padding: 0 5px;
+            background-color: #dc2626;
+            font-size: 10px;
+        }
+        .delete-btn:hover {
+            background-color: #b91c1c;
+        }
+
+        /* MODÁLIS ABLAK AZ ELŐZMÉNYEKHEZ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 1000px;
+            max-width: 95%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #1f2937;
+        }
+        .modal-header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .clear-history-btn {
+            background-color: #dc2626;
+            height: 30px;
+            padding: 0 10px;
+            font-size: 13px;
+        }
+        .clear-history-btn:hover {
+            background-color: #b91c1c;
+        }
+        .close-btn {
+            background-color: #6b7280;
+            height: 30px;
+            padding: 0 10px;
+            font-size: 13px;
+        }
+        .close-btn:hover {
+            background-color: #4b5563;
+        }
+        .modal-body {
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        @media (max-width: 1300px) {
+            .forms-container, .tables-container {
+                grid-template-columns: 1fr;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>TruckFlow</h1>
+        <button type="button" class="header-btn" id="openHistoryBtn">Előzmények (Elhagyott autók)</button>
+    </div>
+
+    <div class="container">
+        <!-- ŰRLAPOK -->
+        <div class="forms-container">
+            <!-- X-SITE HOZZÁRENDELÉS -->
+            <div class="card">
+                <h2>X-Site rámpa hozzárendelés</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="xRampSelect">Rámpa *</label>
+                        <select id="xRampSelect">
+                            <option value="">-- Válassz --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="xTruckInput">Kamion / útvonal *</label>
+                        <input type="text" id="xTruckInput" placeholder="Pl. HU123">
+                    </div>
+                    <div class="form-group">
+                        <label for="xPlateInput">Rendszám</label>
+                        <input type="text" id="xPlateInput" placeholder="Pl. AA-123-BB">
+                    </div>
+                    <div class="form-group">
+                        <label for="xSlotInput">Időkapu</label>
+                        <input type="text" id="xSlotInput" placeholder="Pl. 10:00">
+                    </div>
+                    <div class="form-group">
+                        <label for="xOperationSelect">Művelet *</label>
+                        <select id="xOperationSelect">
+                            <option value="">--- Process ---</option>
+                            <option value="Leszedés">Leszedés</option>
+                            <option value="Felpakolás">Felpakolás</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="xAssignBtn">Hozzáadás</button>
+                    </div>
+                </div>
+                <div id="xMessage" class="message"></div>
+            </div>
+
+            <!-- D-SITE HOZZÁRENDELÉS -->
+            <div class="card">
+                <h2>D-Site rámpa hozzárendelés</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="dRampSelect">Rámpa *</label>
+                        <select id="dRampSelect">
+                            <option value="">-- Válassz --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dTruckInput">Kamion / útvonal *</label>
+                        <input type="text" id="dTruckInput" placeholder="Pl. HU123">
+                    </div>
+                    <div class="form-group">
+                        <label for="dPlateInput">Rendszám</label>
+                        <input type="text" id="dPlateInput" placeholder="Pl. AA-123-BB">
+                    </div>
+                    <div class="form-group">
+                        <label for="dSlotInput">Időkapu</label>
+                        <input type="text" id="dSlotInput" placeholder="Pl. 10:00">
+                    </div>
+                    <div class="form-group">
+                        <label for="dOperationSelect">Művelet *</label>
+                        <select id="dOperationSelect">
+                            <option value="">--- Process ---</option>
+                            <option value="Leszedés">Leszedés</option>
+                            <option value="Felpakolás">Felpakolás</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="dAssignBtn">Hozzáadás</button>
+                    </div>
+                </div>
+                <div id="dMessage" class="message"></div>
+            </div>
+        </div>
+
+        <!-- TÁBLÁZATOK EGYMÁS MELLETT -->
+        <div class="tables-container">
+            <!-- 1. X-SITE TÁBLÁZAT -->
+            <div class="site-container">
+                <div class="site-header-row">
+                    <h2>X-Site rámpák</h2>
+                    <button type="button" class="refresh-btn" id="xRefreshBtn">Frissítés</button>
+                </div>
+                <table class="ramp-table">
+                    <thead>
+                        <tr>
+                            <th>Rámpa</th>
+                            <th>Kamion / útvonal</th>
+                            <th>Rendszám</th>
+                            <th>Időkapu</th>
+                            <th>Művelet</th>
+                            <th>Idő</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="xRampTable"></tbody>
+                </table>
+            </div>
+
+            <!-- 2. D-SITE TÁBLÁZAT -->
+            <div class="site-container">
+                <div class="site-header-row">
+                    <h2>D-Site rámpák</h2>
+                    <button type="button" class="refresh-btn" id="dRefreshBtn">Frissítés</button>
+                </div>
+                <table class="ramp-table">
+                    <thead>
+                        <tr>
+                            <th>Rámpa</th>
+                            <th>Kamion / útvonal</th>
+                            <th>Rendszám</th>
+                            <th>Időkapu</th>
+                            <th>Művelet</th>
+                            <th>Idő</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="dRampTable"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ELŐZMÉNYEK MODÁL ABLAK -->
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Elhagyott / Távozott autók előzményei</h2>
+                <div class="modal-header-actions">
+                    <button type="button" class="clear-history-btn" id="clearHistoryBtn">Lista ürítése</button>
+                    <button type="button" class="close-btn" id="closeHistoryBtn">Bezárás</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <table class="ramp-table">
+                    <thead>
+                        <tr>
+                            <th>Rámpa</th>
+                            <th>Kamion / útvonal</th>
+                            <th>Rendszám</th>
+                            <th>Időkapu</th>
+                            <th>Művelet</th>
+                            <th>Érkezési idő</th>
+                            <th>Távozás ideje</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var StorageKey = "TruckFlow_Assignments";
+        var HistoryKey = "TruckFlow_History";
+
+        function GetAssignments() {
+            var DataV = localStorage.getItem(StorageKey);
+            if (!DataV) return [];
+            try {
+                var Parsed = JSON.parse(DataV);
+                return Array.isArray(Parsed) ? Parsed : [];
+            } catch (e) { return []; }
+        }
+
+        function SaveAssignments(AssignmentsV) {
+            localStorage.setItem(StorageKey, JSON.stringify(AssignmentsV));
+        }
+
+        function GetHistory() {
+            var DataV = localStorage.getItem(HistoryKey);
+            if (!DataV) return [];
+            try {
+                var Parsed = JSON.parse(DataV);
+                return Array.isArray(Parsed) ? Parsed : [];
+            } catch (e) { return []; }
+        }
+
+        function SaveHistory(HistoryV) {
+            localStorage.setItem(HistoryKey, JSON.stringify(HistoryV));
+        }
+
+        function CreateRampOptions() {
+            var XRampSelect = document.getElementById("xRampSelect");
+            var DRampSelect = document.getElementById("dRampSelect");
+            if (!XRampSelect || !DRampSelect) return;
+
+            for (var i = 1; i <= 40; i++) {
+                var rNum = String(i).padStart(2, "0");
+                var rName = "X-" + rNum;
+                var opt = document.createElement("option");
+                opt.value = rName;
+                opt.textContent = rName;
+                XRampSelect.appendChild(opt);
+            }
+
+            for (var j = 1; j <= 40; j++) {
+                var dNum = String(j).padStart(2, "0");
+                var dName = "D-" + dNum;
+                var opt2 = document.createElement("option");
+                opt2.value = dName;
+                opt2.textContent = dName;
+                DRampSelect.appendChild(opt2);
+            }
+        }
+
+        function ShowMessage(ElementIdV, MessageV) {
+            var El = document.getElementById(ElementIdV);
+            if (!El) return;
+            El.textContent = MessageV;
+            setTimeout(function() { El.textContent = ""; }, 3000);
+        }
+
+        function AssignRamp(SitePrefixV) {
+            var RampSelectV, TruckInputV, PlateInputV, SlotInputV, OperationSelectV, MessageIdV;
+
+            if (SitePrefixV === "X") {
+                RampSelectV = document.getElementById("xRampSelect");
+                TruckInputV = document.getElementById("xTruckInput");
+                PlateInputV = document.getElementById("xPlateInput");
+                SlotInputV = document.getElementById("xSlotInput");
+                OperationSelectV = document.getElementById("xOperationSelect");
+                MessageIdV = "xMessage";
+            } else {
+                RampSelectV = document.getElementById("dRampSelect");
+                TruckInputV = document.getElementById("dTruckInput");
+                PlateInputV = document.getElementById("dPlateInput");
+                SlotInputV = document.getElementById("dSlotInput");
+                OperationSelectV = document.getElementById("dOperationSelect");
+                MessageIdV = "dMessage";
+            }
+
+            var RampV = RampSelectV.value.trim();
+            var TruckV = TruckInputV.value.trim();
+            var PlateV = PlateInputV.value.trim();
+            var SlotV = SlotInputV.value.trim();
+            var OperationV = OperationSelectV.value;
+
+            // Kötelező mezők validálása
+            if (RampV === "") {
+                ShowMessage(MessageIdV, "A rámpa kiválasztása kötelező!");
+                return;
+            }
+            if (TruckV === "") {
+                ShowMessage(MessageIdV, "A kamion / útvonal megadása kötelező!");
+                return;
+            }
+            if (OperationV === "") {
+                ShowMessage(MessageIdV, "A művelet kiválasztása kötelező!");
+                return;
+            }
+
+            var AssignmentsV = GetAssignments();
+            var ExistingV = AssignmentsV.find(function(item) { return item.ramp === RampV; });
+            if (ExistingV) {
+                ShowMessage(MessageIdV, "Ez a rámpa már foglalt!");
+                return;
+            }
+
+            var NewAssignmentV = {
+                ramp: RampV,
+                truck: TruckV,
+                plate: PlateV,
+                slot: SlotV,
+                operation: OperationV,
+                time: new Date().toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })
+            };
+
+            AssignmentsV.push(NewAssignmentV);
+            SaveAssignments(AssignmentsV);
+
+            // Mezők alaphelyzetbe állítása
+            RampSelectV.value = "";
+            TruckInputV.value = "";
+            PlateInputV.value = "";
+            SlotInputV.value = "";
+            OperationSelectV.value = "";
+
+            RenderRamps();
+            ShowMessage(MessageIdV, "Sikeres hozzárendelés.");
+        }
+
+        function DeleteAssignment(RampV) {
+            var ConfirmV = confirm("Biztosan felszabadítod a(z) " + RampV + " rámpát? (Az autó átkerül az előzményekbe)");
+            if (!ConfirmV) return;
+
+            var AssignmentsV = GetAssignments();
+            var HistoryV = GetHistory();
+
+            var targetItem = AssignmentsV.find(function(item) { return item.ramp === RampV; });
+            if (targetItem) {
+                targetItem.leftTime = new Date().toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" });
+                HistoryV.unshift(targetItem);
+                SaveHistory(HistoryV);
+            }
+
+            AssignmentsV = AssignmentsV.filter(function(item) { return item.ramp !== RampV; });
+            SaveAssignments(AssignmentsV);
+            RenderRamps();
+        }
+
+        function CreateRampRow(TableElementV, RampNameV, AssignmentsV) {
+            var AssignmentV = AssignmentsV.find(function(ItemV) { return ItemV.ramp === RampNameV; });
+
+            var RowV = document.createElement("tr");
+            var RampCellV = document.createElement("td");
+            var TruckCellV = document.createElement("td");
+            var PlateCellV = document.createElement("td");
+            var SlotCellV = document.createElement("td");
+            var OperationCellV = document.createElement("td");
+            var TimeCellV = document.createElement("td");
+            var ButtonCellV = document.createElement("td");
+
+            RampCellV.textContent = RampNameV;
+
+            if (AssignmentV) {
+                TruckCellV.textContent = AssignmentV.truck;
+                PlateCellV.textContent = AssignmentV.plate || "-";
+                SlotCellV.textContent = AssignmentV.slot || "-";
+                OperationCellV.textContent = AssignmentV.operation;
+                TimeCellV.textContent = AssignmentV.time;
+                RowV.className = "occupied";
+
+                var DeleteButtonV = document.createElement("button");
+                DeleteButtonV.type = "button";
+                DeleteButtonV.textContent = "X";
+                DeleteButtonV.className = "delete-btn";
+                DeleteButtonV.addEventListener("click", function() {
+                    DeleteAssignment(RampNameV);
+                });
+                ButtonCellV.appendChild(DeleteButtonV);
+            } else {
+                TruckCellV.textContent = "Szabad";
+                PlateCellV.textContent = "-";
+                SlotCellV.textContent = "-";
+                OperationCellV.textContent = "-";
+                TimeCellV.textContent = "-";
+                RowV.className = "free";
+            }
+
+            RowV.appendChild(RampCellV);
+            RowV.appendChild(TruckCellV);
+            RowV.appendChild(PlateCellV);
+            RowV.appendChild(SlotCellV);
+            RowV.appendChild(OperationCellV);
+            RowV.appendChild(TimeCellV);
+            RowV.appendChild(ButtonCellV);
+
+            TableElementV.appendChild(RowV);
+        }
+
+        function RenderRamps() {
+            var XTableV = document.getElementById("xRampTable");
+            var DTableV = document.getElementById("dRampTable");
+            if (!XTableV || !DTableV) return;
+
+            XTableV.innerHTML = "";
+            DTableV.innerHTML = "";
+
+            var AssignmentsV = GetAssignments();
+
+            for (var i = 1; i <= 40; i++) {
+                CreateRampRow(XTableV, "X-" + String(i).padStart(2, "0"), AssignmentsV);
+            }
+            for (var j = 1; j <= 40; j++) {
+                CreateRampRow(DTableV, "D-" + String(j).padStart(2, "0"), AssignmentsV);
+            }
+        }
+
+        function RenderHistory() {
+            var HistoryBody = document.getElementById("historyTableBody");
+            if (!HistoryBody) return;
+            HistoryBody.innerHTML = "";
+
+            var HistoryV = GetHistory();
+            if (HistoryV.length === 0) {
+                var tr = document.createElement("tr");
+                var td = document.createElement("td");
+                td.colSpan = 7;
+                td.textContent = "Még nincsenek előzmények.";
+                td.style.textAlign = "center";
+                td.style.padding = "15px";
+                tr.appendChild(td);
+                HistoryBody.appendChild(tr);
+                return;
+            }
+
+            HistoryV.forEach(function(item) {
+                var tr = document.createElement("tr");
+                
+                var rCell = document.createElement("td");
+                rCell.textContent = item.ramp;
+                
+                var tCell = document.createElement("td");
+                tCell.textContent = item.truck;
+                tCell.style.fontWeight = "bold";
+
+                var pCell = document.createElement("td");
+                pCell.textContent = item.plate || "-";
+
+                var sCell = document.createElement("td");
+                sCell.textContent = item.slot || "-";
+                
+                var oCell = document.createElement("td");
+                oCell.textContent = item.operation;
+                
+                var timeCell = document.createElement("td");
+                timeCell.textContent = item.time;
+
+                var leftCell = document.createElement("td");
+                leftCell.textContent = item.leftTime || "-";
+
+                tr.appendChild(rCell);
+                tr.appendChild(tCell);
+                tr.appendChild(pCell);
+                tr.appendChild(sCell);
+                tr.appendChild(oCell);
+                tr.appendChild(timeCell);
+                tr.appendChild(leftCell);
+
+                HistoryBody.appendChild(tr);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("xAssignBtn").addEventListener("click", function() { AssignRamp("X"); });
+            document.getElementById("dAssignBtn").addEventListener("click", function() { AssignRamp("D"); });
+            document.getElementById("xRefreshBtn").addEventListener("click", RenderRamps);
+            document.getElementById("dRefreshBtn").addEventListener("click", RenderRamps);
+
+            var modal = document.getElementById("historyModal");
+            document.getElementById("openHistoryBtn").addEventListener("click", function() {
+                RenderHistory();
+                modal.style.display = "flex";
+            });
+            document.getElementById("closeHistoryBtn").addEventListener("click", function() {
+                modal.style.display = "none";
+            });
+
+            document.getElementById("clearHistoryBtn").addEventListener("click", function() {
+                var password = prompt("Add meg a jelszót az előzmények törléséhez:");
+                if (password === null) return;
+
+                if (password === "aaa") {
+                    var confirmClear = confirm("Biztosan törölni akarod az összes előzményt?");
+                    if (confirmClear) {
+                        localStorage.removeItem(HistoryKey);
+                        RenderHistory();
+                        alert("Az előzmények sikeresen törölve lettek.");
+                    }
+                } else {
+                    alert("Hibás jelszó!");
+                }
+            });
+
+            CreateRampOptions();
+            RenderRamps();
+
+            window.addEventListener("storage", function(event) {
+                if (event.key === StorageKey) {
+                    RenderRamps();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
